@@ -1,0 +1,20 @@
+<?php
+global $zon, $site_url;
+$page = getPageById($zon['page'][1]);
+?>
+<div style="min-height: 30vh; filter: blur(90px)" class="active-game-img">
+    <div class="overlay"></div>
+    <div style="background-image: url(<?= $site_url . 'static/img/' . $zon['config']['page_banner'] ?>);"
+        id="bg-game-img" class="image"></div>
+</div>
+<div class="zon-container">
+    <div class="_700x120"><?= getAdById(7, "code") ?></div>
+    <div class="mt-6">
+        <h1 class="text-3xl text-[var(--common-color)] font-bold  ">
+            <?php echo $page['title'] ?>
+        </h1>
+        <div class="page-content text-[var(--common-color)] mt-6">
+            <?php echo $page['content'] ?>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,90 @@
+<?php global $zon, $site_url, $socket; ?>
+<div style="min-height: 30vh; filter: blur(90px)" class="active-game-img">
+    <div class="overlay"></div>
+    <div style="background-image: url(<?= $site_url . 'static/img/' . $zon['config']['page_banner'] ?>);" id="bg-game-img" class="image"></div>
+</div>
+<h1 class="text-3xl mb-2 mt-3 flex gap-4 items-center page-heading text-[var(--common-color)]"><svg width="36px"
+        height="36px" stroke-width="2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+        color="#000000">
+        <path
+            d="M22 8.86222C22 10.4087 21.4062 11.8941 20.3458 12.9929C17.9049 15.523 15.5374 18.1613 13.0053 20.5997C12.4249 21.1505 11.5042 21.1304 10.9488 20.5547L3.65376 12.9929C1.44875 10.7072 1.44875 7.01723 3.65376 4.73157C5.88044 2.42345 9.50794 2.42345 11.7346 4.73157L11.9998 5.00642L12.2648 4.73173C13.3324 3.6245 14.7864 3 16.3053 3C17.8242 3 19.2781 3.62444 20.3458 4.73157C21.4063 5.83045 22 7.31577 22 8.86222Z"
+            stroke="red" stroke-width="2" stroke-linejoin="round"></path>
+    </svg> Your Liked Games</h1>
+    <div class="_700x120"><?= getAdById(7, "code") ?></div>
+<?php
+if (count(getUserLikedGame()) > 0) {
+    echo "<div class='mt-8'></div>"; ?>
+    <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <?php foreach (getUserLikedGame() as $game) {
+            $cn = $game['game_category'];
+            $c = runner("SELECT * FROM zon_category WHERE name='$cn'")[0];
+            $game['slug'] = $c['slug']; ?>
+            <div class="game-card wow <?php echo $zon['config']['animate_class'] ?> ">
+                <a data-ajax="true" data-href="/<?= $game['game_slug'] ?>" href="<?= $site_url . $game['game_slug'] ?>"
+                    data-logo-src="<?= $zon['logo'] ?>" class=" game-poster">
+                    <div class="loader">
+                        <div class="fadeLogo">
+                            <img src="<?= $zon['logo'] ?>" />
+                        </div>
+                    </div>
+                    <img src="<?= $game['game_banner_url'] === '' ? $game['game_image_url'] : $game['game_banner_url'] ?>"
+                        onerror="this.previousElementSibling.classList.add('active')" loading="lazy"
+                        alt="<?= $game['game_name'] ?>" />
+                    <?php if ($game['game_played'] >= $zon['config']['popular_views']) { ?>
+                        <div class="badge hot">
+                            <svg width="20px" height="20px" viewBox="0 0 24 24" stroke-width="2" fill="none"
+                                xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                <path d="M13 10V3L5 14H11V21L19 10H13Z" stroke="#000000" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                </path>
+                            </svg>
+                        </div>
+                    <?php } ?>
+
+                    <?php if ($game['game_played'] == 0) { ?>
+                        <div class="badge new">
+                            <svg width="20px" height="20px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                <path
+                                    d="M15.8189 13.3287L10.4948 19.3183C9.69924 20.2134 8.30076 20.2134 7.50518 19.3183L2.18109 13.3287C1.50752 12.571 1.50752 11.429 2.18109 10.6713L7.50518 4.68167C8.30076 3.78664 9.69924 3.78664 10.4948 4.68167L15.8189 10.6713C16.4925 11.429 16.4925 12.571 15.8189 13.3287Z"
+                                    stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                </path>
+                                <path
+                                    d="M12 6.375L13.5052 4.68167C14.3008 3.78664 15.6992 3.78664 16.4948 4.68167L21.8189 10.6713C22.4925 11.429 22.4925 12.571 21.8189 13.3287L16.4948 19.3183C15.6992 20.2134 14.3008 20.2134 13.5052 19.3183L12 17.625"
+                                    stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                </path>
+                            </svg>
+                        </div>
+                    <?php } ?>
+                    <div class="played-badge">
+                        <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M32 18H16C9.37258 18 4 23.3726 4 30C4 36.6274 9.37258 42 16 42H32C38.6274 42 44 36.6274 44 30C44 23.3726 38.6274 18 32 18Z"
+                                fill="none" stroke="#000000" stroke-width="2" stroke-linejoin="round" />
+                            <path d="M16 26V34" stroke="#000000" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <path d="M12 30H20" stroke="#000000" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <path d="M24 16V9.71429H32V4" stroke="#000000" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <path
+                                d="M32 34C34.2091 34 36 32.2091 36 30C36 27.7909 34.2091 26 32 26C29.7909 26 28 27.7909 28 30C28 32.2091 29.7909 34 32 34Z"
+                                fill="none" stroke="#000000" stroke-width="2" stroke-linejoin="round" />
+                        </svg>
+                        <span><?= $game['game_played'] ?></span>
+                    </div>
+                </a>
+                <div class="game-details flex flex-col px-2 mt-2">
+                    <a data-ajax="true" data-href="/<?= makeSlug($game['game_slug']) ?>"
+                        class="text-2xl text-[var(--common-color)] game-name"
+                        href="<?= $site_url . makeSlug($game['game_name']) ?>"><?= $game['game_name'] ?></a>
+                    <a data-ajax="true" data-href="/<?= makeSlug($game['slug']) ?>"
+                        class="text-md text-[var(--common-color-muted)] mt-1 capitalize"
+                        href="<?= $site_url . makeSlug($game['slug']) ?>"><?= $game['game_category'] ?></a>
+                </div>
+            </div>
+        <?php } ?>
+    </div>
+<?php } else { ?>
+    <p class="text-[var(--common-color-muted)]"> You haven't liked any games yet</p>
+<?php } ?>

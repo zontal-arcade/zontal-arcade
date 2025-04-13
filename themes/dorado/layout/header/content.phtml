@@ -1,0 +1,60 @@
+<?php global $site_url; ?>
+<form action="#" class="search-bar">
+  <input class="search-input" placeholder="Search" type="text" />
+  <button class="search-button"><svg width="20px" height="20px" viewBox="0 0 24 24" stroke-width="2" fill="none"
+      xmlns="http://www.w3.org/2000/svg" color="#000000">
+      <path d="M17 17L21 21" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+      <path
+        d="M3 11C3 15.4183 6.58172 19 11 19C13.213 19 15.2161 18.1015 16.6644 16.6493C18.1077 15.2022 19 13.2053 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11Z"
+        stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      </path>
+    </svg></button>
+</form>
+<?php if (IsLoggedin) { ?>
+  <div class="user-profile mr-6">
+    <img src="media/2.jpg" alt="" />
+    <div class="dropdown-content">
+      <a href="#"><svg width="20px" height="20px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+          xmlns="http://www.w3.org/2000/svg" color="#000000">
+          <path d="M2 20V19C2 15.134 5.13401 12 9 12V12" stroke="#000000" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round"></path>
+          <path
+            d="M15.8038 12.3135C16.4456 11.6088 17.5544 11.6088 18.1962 12.3135V12.3135C18.5206 12.6697 18.9868 12.8628 19.468 12.8403V12.8403C20.4201 12.7958 21.2042 13.5799 21.1597 14.532V14.532C21.1372 15.0132 21.3303 15.4794 21.6865 15.8038V15.8038C22.3912 16.4456 22.3912 17.5544 21.6865 18.1962V18.1962C21.3303 18.5206 21.1372 18.9868 21.1597 19.468V19.468C21.2042 20.4201 20.4201 21.2042 19.468 21.1597V21.1597C18.9868 21.1372 18.5206 21.3303 18.1962 21.6865V21.6865C17.5544 22.3912 16.4456 22.3912 15.8038 21.6865V21.6865C15.4794 21.3303 15.0132 21.1372 14.532 21.1597V21.1597C13.5799 21.2042 12.7958 20.4201 12.8403 19.468V19.468C12.8628 18.9868 12.6697 18.5206 12.3135 18.1962V18.1962C11.6088 17.5544 11.6088 16.4456 12.3135 15.8038V15.8038C12.6697 15.4794 12.8628 15.0132 12.8403 14.532V14.532C12.7958 13.5799 13.5799 12.7958 14.532 12.8403V12.8403C15.0132 12.8628 15.4794 12.6697 15.8038 12.3135V12.3135Z"
+            stroke="#000000" stroke-width="2"></path>
+          <path d="M15.3636 17L16.4546 18.0909L18.6364 15.9091" stroke="#000000" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round"></path>
+          <path
+            d="M9 12C11.2091 12 13 10.2091 13 8C13 5.79086 11.2091 4 9 4C6.79086 4 5 5.79086 5 8C5 10.2091 6.79086 12 9 12Z"
+            stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>Admin Panel</a>
+      <a href="#"><svg width="20px" height="20px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+          xmlns="http://www.w3.org/2000/svg" color="#000000">
+          <path
+            d="M22 8.86222C22 10.4087 21.4062 11.8941 20.3458 12.9929C17.9049 15.523 15.5374 18.1613 13.0053 20.5997C12.4249 21.1505 11.5042 21.1304 10.9488 20.5547L3.65376 12.9929C1.44875 10.7072 1.44875 7.01723 3.65376 4.73157C5.88044 2.42345 9.50794 2.42345 11.7346 4.73157L11.9998 5.00642L12.2648 4.73173C13.3324 3.6245 14.7864 3 16.3053 3C17.8242 3 19.2781 3.62444 20.3458 4.73157C21.4063 5.83045 22 7.31577 22 8.86222Z"
+            stroke="#000000" stroke-width="2" stroke-linejoin="round"></path>
+        </svg> Liked Games</a>
+      <a href="#"><svg width="20px" height="20px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+          xmlns="http://www.w3.org/2000/svg" color="#000000">
+          <path
+            d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z"
+            stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+          <path
+            d="M19.6224 10.3954L18.5247 7.7448L20 6L18 4L16.2647 5.48295L13.5578 4.36974L12.9353 2H10.981L10.3491 4.40113L7.70441 5.51596L6 4L4 6L5.45337 7.78885L4.3725 10.4463L2 11V13L4.40111 13.6555L5.51575 16.2997L4 18L6 20L7.79116 18.5403L10.397 19.6123L11 22H13L13.6045 19.6132L16.2551 18.5155C16.6969 18.8313 18 20 18 20L20 18L18.5159 16.2494L19.6139 13.598L21.9999 12.9772L22 11L19.6224 10.3954Z"
+            stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg> Settings</a>
+      <a href="#"><svg width="20px" height="20px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+          xmlns="http://www.w3.org/2000/svg" color="#000000">
+          <path d="M12 12H19M19 12L16 15M19 12L16 9" stroke="#000000" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round"></path>
+          <path
+            d="M19 6V5C19 3.89543 18.1046 3 17 3H7C5.89543 3 5 3.89543 5 5V19C5 20.1046 5.89543 21 7 21H17C18.1046 21 19 20.1046 19 19V18"
+            stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg> Logout</a>
+    </div>
+  </div>
+<?php } else { ?>
+  <div class="flex gap-2">
+    <a data-ajax="true" data-href="/login" href="<?= $site_url ?>login" class="authentic-button mr-2 fill">Login</a>
+    <a data-ajax="true" data-href="/register" href="<?= $site_url ?>sign-up" class="authentic-button bordered">Sign up</a>
+  </div>
+<?php } ?>

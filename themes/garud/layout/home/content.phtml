@@ -1,0 +1,52 @@
+<?php global $site_url, $zon; ?>
+<main class="zon-container">
+    <div class="game__grid mt-4 home__game__grid">
+        <?php foreach (getGame(60) as $game) { ?>
+            <div class="game new__badges wow <?php echo $zon['config']['animate_class'] ?>">
+                <a href="<?= $site_url . 'game/' . makeSlug($game['game_name']) . '/' . $game['id'] ?>" class="game__thumb">
+                    <img src="<?= $game['game_image_url'] ?>" alt="<?= $game['game_name'] ?>" />
+                </a>
+                <a href="<?= $site_url . 'game/' . makeSlug($game['game_name']) . '/' . $game['id'] ?>" class="game_name">
+                    <?= $game['game_name'] ?>
+                </a>
+            </div>
+        <?php } ?>
+    </div>
+    <?php if (getAdById(3, 'status') == 0) { ?>
+        <div class="p-2">
+            <div class="ads wow <?php echo $zon['config']['animate_class'] ?> flex justify-center">
+                <?php echo getAdById(3, 'code') ?>
+            </div>
+        </div>
+    <?php } ?>
+    <div class="more-games flex justify-center">
+        <a href="<?php echo $site_url ?>all-games" class="more_games_button bg-[var(--zon-theme-color)]"> more games</a>
+    </div>
+    <div class="game__categories mt-12">
+        <?php foreach (getCategory() as $category) {
+            $game = GameByCategoryWise($category['name'], 1)[0];
+            ?>
+            <div class="category shadow-md wow <?php echo $zon['config']['animate_class'] ?>">
+                <a class="block h-16 w-20 mr-6" href="<?= $site_url . 'category/?n=' . urlencode($category['name']) ?>">
+                    <img class="block h-16 w-20" src="<?= $game['game_image_url'] ?>" alt="<?= $category['name'] ?>">
+                </a>
+                <div class="text">
+                    <a class="category__name capitalize"
+                        href="<?= $site_url . 'category/?n=' . urlencode($category['name']) ?>">
+                        <?= $category['name'] ?>
+                    </a>
+                    <p class="text-gray-500">
+                        <?php echo count(GameByCategoryWise($category['name'])) ?> games available
+                    </p>
+                </div>
+            </div>
+        <?php } ?>
+    </div>
+</main>
+<?php if (getAdById(6, 'status') == 0) { ?>
+    <div class="p-2">
+        <div class="ads wow <?php echo $zon['config']['animate_class'] ?> flex justify-center">
+            <?php echo getAdById(6, 'code') ?>
+        </div>
+    </div>
+<?php } ?>

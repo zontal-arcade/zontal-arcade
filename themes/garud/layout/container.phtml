@@ -1,0 +1,305 @@
+<?php global $site_url; ?>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="<?php echo $zon['config']['site_keywords'] ?>" />
+    <?php if ($zon['page'][0] == '') { ?>
+        <?php # meta tags for home page       ?>
+        <meta name="description" content="<?php echo $zon['config']['site_desc'] ?>" />
+        <link rel="canonical" href="<?php echo $site_url ?>" />
+        <meta property="og:title" content="<?php echo $zon['config']['site_title'] ?>">
+        <meta property="og:type" content="website">
+        <meta property="og:image" content="<?php echo $site_url . 'static/logo/' . $zon['config']['site_logo_light'] ?>">
+        <meta property="og:url" content="<?php echo $site_url ?>">
+        <meta property="og:description" content="<?php echo $zon['config']['site_desc'] ?>">
+        <meta property="og:site_name" content="<?php echo $zon['config']['site_name'] ?>">
+        <meta property="og:image:width" content="630" />
+        <meta property="og:image:height" content="630" />
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="@<?php echo strtolower($zon['config']['site_name']) ?>">
+        <meta name="twitter:creator" content="@<?php echo strtolower($zon['config']['site_name']) ?>">
+        <meta name="twitter:title" content="<?php echo $zon['config']['site_title'] ?>">
+        <meta name="twitter:description" content="<?php echo $zon['config']['site_desc'] ?>">
+        <meta name="twitter:image" content="<?php echo $site_url . 'static/logo/' . $zon['config']['site_logo_light'] ?>">
+        <meta name="twitter:image:alt" content="<?php echo $zon['config']['site_title'] ?>">
+        <meta name="twitter:domain" content="<?php echo $_SERVER['HTTP_HOST'] ?>">
+    <?php } ?>
+    <?php if ($zon['page'][0] == 'game' && (count($zon['page']) == 3 || count($zon['page']) == 4) || $zon['page'][0] == 'single' && (count($zon['page']) == 3 || count($zon['page']) == 4)) {
+        $play_title = $zon['config']['play_desc'];
+
+        if ($zon['page'][0] == 'single') {
+            $game = getGamesById($zon['page'][1]);
+        }
+        if ($zon['page'][0] == 'game') {
+            $game = getGamesById($zon['page'][2]);
+        }
+
+        $game_desc = str_replace("[name]", $game['game_name'], $play_title);
+        $game['game_description'] = $game_desc;
+        ?>
+        <meta name="description" content="<?php echo $game_desc ?>" />
+        <link rel="canonical" href="<?php echo $site_url . 'game/' . makeSlug($game['game_name']) . '/' . $game['id'] ?>" />
+        <meta property="og:title" content="<?php echo $game['game_name'] ?>">
+        <meta property="og:type" content="website">
+        <meta property="og:image" content="<?php echo $game['game_image_url'] ?>" />
+        <meta property="og:url"
+            content="<?php echo $site_url . 'game/' . makeSlug($game['game_name']) . '/' . $game['id'] ?>">
+        <meta property="og:description" content="<?php echo $game['game_description'] ?>">
+        <meta property="og:site_name" content="<?php echo $zon['config']['site_name'] ?>">
+        <meta property="og:image:width" content="630" />
+        <meta property="og:image:height" content="630" />
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="@<?php echo strtolower($zon['config']['site_name']) ?>">
+        <meta name="twitter:creator" content="@<?php echo strtolower($zon['config']['site_name']) ?>">
+        <meta name="twitter:title" content="<?php echo $game['game_name'] ?>">
+        <meta name="twitter:description" content="<?php echo $game['game_description'] ?>">
+        <meta name="twitter:image" content="<?php echo $game['game_image_url'] ?>">
+        <meta name="twitter:image:alt" content="<?php echo $game['game_name'] ?>">
+        <meta name="twitter:domain" content="<?php echo $_SERVER['HTTP_HOST'] ?>">
+    <?php } ?>
+    <?php if ($zon['page'][0] == 'new-games' || ($zon['page'][0] == 'archive' && $zon['page'][1] == 'newest')) { ?>
+        <meta name="description" content="<?php echo $zon['config']['games_desc'] ?>" />
+    <?php } ?>
+    <?php if ($zon['page'][0] == 'popular-games' || ($zon['page'][0] == 'archive' && $zon['page'][1] == 'popular')) { ?>
+        <meta name="description" content="<?php echo $zon['config']['games_desc'] ?>" />
+    <?php } ?>
+    <?php if ($zon['page'][0] == 'games') { ?>
+        <meta name="description" content="<?php echo $zon['config']['games_desc'] ?>" />
+    <?php } ?>
+    <?php if ($zon['page'][0] == 'category' || $zon['page'][0] == 'game' && count($zon['page']) == 2) {
+        $category_desc = $zon['config']['category_desc'];
+        $title = str_replace("[name]", $_GET['n'] ?? '', $category_desc);
+        ?>
+        <meta name="description" content="<?php echo $title ?>" />
+    <?php } ?>
+    <meta name="robots" content="index, follow">
+    <link rel="shortcut icon" href="<?php echo $site_url . 'static/img/logo/' . $zon['config']['site_favicon'] ?>"
+        type="image/x-icon">
+    <title>
+        <?php getTitle(); ?>
+    </title>
+    <link rel="stylesheet" href="<?php echo $site_url ?>themes/<?php echo $zon['config']['theme'] ?>/css/style.css">
+    <script src="<?php echo $site_url ?>js/tailwind.js"></script>
+    <link rel="stylesheet" href="<?php echo $site_url ?>css/animate.css" />
+    <script src="<?php echo $site_url ?>js/wow.min.js"></script>
+    <script>zontal = { url: "<?php echo $site_url ?>", ui: <?php echo $zon['user']['id'] ?? 0; ?> }</script>
+    <script src="<?php echo $site_url ?>js/toast.min.js"></script>
+    <link rel="stylesheet" href="<?php echo $site_url ?>css/toast.min.css" />
+    <?php echo $zon['config']['head_code'] ?>
+    <style>
+        :root {
+            --zon-body-bg-color: #111;
+            --zon-common-text-color: #111;
+            --zon-theme-color:
+                <?php echo $zon['config']['site_color'] ?>
+            ;
+            --zon-div-color: #999;
+            --zon-muted-color: #777;
+            --zon-more-button-bg-color: #222;
+            --zon-search-bg-color: #222;
+            --zon-search-hover-color: #333;
+            --zon-gmeta-bg-color: #222;
+            --zon-overlay-bg-color: #000000af;
+            --zon-cursor-color:
+                <?php echo $zon['config']['cursor_color'] ?>
+            ;
+            --zon-toggler-bg-color: #222;
+            --zon-icon-color: #fff;
+            --zon-dark-logo: block;
+            --zon-light-logo: none;
+            --zon-sidebar-shadow: 0px 0px 40px 0px #000;
+            --zon-blog-social-button-bg-hover-color: #222;
+            --zon-comment-input-b-color: #222;
+        }
+    </style>
+</head>
+
+<body>
+    <?php
+    LoadFile('header');
+    if ($zon['page'][0] === '') {
+        LoadFile('home');
+    } else if ($zon['page'][0] === 'game' || $zon['page'][0] === 'single') {
+        LoadFile('game');
+    } else if ($zon['page'][0] === 'page') {
+        LoadFile('page');
+    } else if ($zon['page'][0] === 'category') {
+        LoadFile('category');
+    } else if ($zon['page'][0] === 'all-games') {
+        LoadFile('all-games');
+    } else if ($zon['page'][0] === 'new-games') {
+        LoadFile('newest-games');
+    } else if ($zon['page'][0] === 'popular-games') {
+        LoadFile('popular-games');
+    } else if ($zon['page'][0] === 'login') {
+        LoadFile('login');
+    } else if ($zon['page'][0] === 'register') {
+        LoadFile('register');
+    } else if ($zon['page'][0] === 'autoplay') {
+        LoadFile('autoplay');
+    } else if (num_rows(T_ZON_USERS, "username='" . $zon['page'][0] . "'") > 0) {
+        if (IsLoggedin) {
+            LoadFile('user-profile');
+        }
+    } else if ($zon['page'][0] === 'logout') {
+        redirect('logout.php', 1);
+    } else if ($zon['page'][0] === 'search') {
+        LoadFile('search');
+    } else {
+        LoadFile('404');
+    }
+    ?>
+
+    <hr class="mt-28">
+    <footer class="zon-container">
+        <ul class="flex">
+            <?php foreach (getPages() as $page) { ?>
+                <li><a class="block px-4 hover:bg-[var(--zon-theme-color)] rounded-md hover:text-white transition duration-300 capitalize py-2 my-4 text-sm text-gray-600 "
+                        href="<?= $site_url . 'page/' . $page['id'] . '/' . makeSlug($page['title']) ?>">
+                        <?= $page['title'] ?>
+                    </a></li>
+            <?php } ?>
+        </ul>
+        <hr class="mb-6">
+        <div class="footer-content">
+            <?php echo $zon['config']['footer_content'] ?>
+        </div>
+        <hr class="mt-6">
+        <div class="text-center text-sm capitalize py-3 text-gray-600 mt-2">©
+            <?php echo $zon['config']['site_name'] ?>
+            <?php echo date("Y") ?>
+        </div>
+    </footer>
+
+    <script>
+        var game = document.querySelectorAll(".home__game__grid .game");
+        if (game.length > 0) {
+            for (let i = 0; i < game.length; i++) {
+                if (i == 0) { game[i].classList.add("large"); }
+                if (i == 15) { game[i].classList.add("large"); }
+                if (i == 23) { game[i].classList.add("large"); }
+                if (i == 43) { game[i].classList.add("large"); }
+            }
+        }
+    </script>
+    <script> new WOW().init();  </script>
+    <script src="<?php echo $site_url ?>themes/<?php echo $zon['config']['theme'] ?>/js/main.js"></script>
+    <script src="<?php echo $site_url ?>js/jquery.min.js"></script>
+    <script>
+        $(document).on("click", (event) => {
+            if (!event.target.closest(".search-drawer") && !event.target.closest(".search")) {
+                $("#drawer").removeClass("active");
+            }
+
+            if (!event.target.closest(".menu-drawer") && !event.target.closest(".menu")) {
+                $("#menu-drawer").removeClass("active");
+            }
+        })
+    </script>
+    <?php if ($zon['page'][0] == 'popular-games' || ($zon['page'][0] == 'archive' && $zon['page'][1] == 'popular')) { ?>
+        <script>
+            var page_no = 1;
+
+            LoadData();
+
+            $(window).scroll(() => {
+                if ($(window).scrollTop() + $(window).height() > $(document).height() - 200) {
+                    LoadData();
+                }
+            })
+
+            function LoadData() {
+                $.post("<?php echo $site_url ?>xhr/popular-games.php", {
+                    page: page_no
+                }, (data) => {
+                    // console.log(data);
+                    $("#zon_games").append(data);
+                    $("#zon-loader").hide();
+                });
+
+                page_no++;
+            }
+        </script>
+    <?php } ?>
+    <?php if ($zon['page'][0] == 'new-games' || ($zon['page'][0] == 'archive' && $zon['page'][1] == 'newest')) { ?>
+        <script>
+            var page_no = 1;
+
+            LoadData();
+
+            $(window).scroll(() => {
+                if ($(window).scrollTop() + $(window).height() > $(document).height() - 200) {
+                    LoadData();
+                }
+            })
+
+            function LoadData() {
+                $.post("<?php echo $site_url ?>xhr/new-games.php", {
+                    page: page_no
+                }, (data) => {
+                    // console.log(data);
+                    $("#zon_games").append(data);
+                    $("#zon-loader").hide();
+                });
+
+                page_no++;
+            }
+        </script>
+    <?php } ?>
+    <?php if ($zon['page'][0] == 'all-games') { ?>
+        <script>
+            var page_no = 1;
+
+            LoadData();
+
+            $(window).scroll(() => {
+                if ($(window).scrollTop() + $(window).height() > $(document).height() - 200) {
+                    LoadData();
+                }
+            })
+
+            function LoadData() {
+                $.post("<?php echo $site_url ?>xhr/all-games.php", {
+                    page: page_no
+                }, (data) => {
+                    // console.log(data);
+                    $("#zon_games").append(data);
+                    $("#zon-loader").hide();
+                });
+
+                page_no++;
+            }
+        </script>
+    <?php } ?>
+    <?php if ($zon['page'][0] == 'category' || ($zon['page'][0] == 'game' && count($zon['page']) == 2)) { ?>
+        <script>
+            var page_no = 1;
+
+            LoadData();
+
+            $(window).scroll(() => {
+                if ($(window).scrollTop() + $(window).height() > $(document).height() - 200) {
+                    LoadData();
+                }
+            })
+
+            function LoadData() {
+                $.post("<?php echo $site_url ?>xhr/games-by-category.php", {
+                    page: page_no,
+                    category: '<?php echo urldecode($_GET['n'] ?? $zon['page'][1]); ?>'
+                }, (data) => {
+                    // console.log(data);
+                    $("#zon_games").append(data);
+                    $("#zon-loader").hide();
+                });
+
+                page_no++;
+            }
+        </script>
+    <?php } ?>
+</body>
+
+</html>

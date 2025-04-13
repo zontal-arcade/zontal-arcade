@@ -1,0 +1,642 @@
+<?php global $site_url, $zon; ?>
+<!DOCTYPE html>
+<html data-zon-skin="dark" lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <?php // <link rel="preload" href="<?= $site_url static/img/mvnthemes.png" as="image" />
+  // <link rel="preload" href="<?= $site_url static/img/loader.gif" as="image" />
+  ?>
+  <?php if ($zon['page'][0] == '') { ?>
+    <?php # meta tags for home page                          ?>
+    <meta name="description" content="<?php echo $zon['config']['site_desc'] ?>" />
+    <link rel="canonical" href="<?php echo $site_url ?>" />
+    <meta property="og:title" content="<?php echo $zon['config']['site_title'] ?>">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="<?php echo $site_url . 'static/logo/' . $zon['config']['site_logo_light'] ?>">
+    <meta property="og:url" content="<?php echo $site_url ?>">
+    <meta property="og:description" content="<?php echo $zon['config']['site_desc'] ?>">
+    <meta property="og:site_name" content="<?php echo $zon['config']['site_name'] ?>">
+    <meta property="og:image:width" content="630" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@<?php echo strtolower($zon['config']['site_name']) ?>">
+    <meta name="twitter:creator" content="@<?php echo strtolower($zon['config']['site_name']) ?>">
+    <meta name="twitter:title" content="<?php echo $zon['config']['site_title'] ?>">
+    <meta name="twitter:description" content="<?php echo $zon['config']['site_desc'] ?>">
+    <meta name="twitter:image" content="<?php echo $site_url . 'static/logo/' . $zon['config']['site_logo_light'] ?>">
+    <meta name="twitter:image:alt" content="<?php echo $zon['config']['site_title'] ?>">
+    <meta name="twitter:domain" content="<?php echo $_SERVER['HTTP_HOST'] ?>">
+  <?php } ?>
+  <?php if (strlen($zon['page'][0]) != 0 && IsGame($zon['page'][0])) {
+    $play_desc = $zon['config']['play_desc'];
+    $game_name = $zon['page'][0];
+    $data = runner("SELECT * FROM zon_games WHERE game_slug='$game_name'")[0];
+    $game = $data;
+
+    $game_desc = str_replace("[name]", $game['game_description'], $play_desc);
+    $game['game_description'] = $game_desc;
+    ?>
+    <meta name="description" content="<?php echo $game_desc ?>" />
+    <link rel="canonical" href="<?php echo $site_url . 'g/' . makeSlug($game['game_name']) ?>" />
+    <meta property="og:title" content="<?php echo $game['game_name'] ?>">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="<?php echo $game['game_image_url'] ?>" />
+    <meta property="og:url" content="<?php echo $site_url . 'g/' . makeSlug($game['game_name']) ?>">
+    <meta property="og:description" content="<?php echo $game['game_description'] ?>">
+    <meta property="og:site_name" content="<?php echo $zon['config']['site_name'] ?>">
+    <meta property="og:image:width" content="630" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@<?php echo strtolower($zon['config']['site_name']) ?>">
+    <meta name="twitter:creator" content="@<?php echo strtolower($zon['config']['site_name']) ?>">
+    <meta name="twitter:title" content="<?php echo $game['game_name'] ?>">
+    <meta name="twitter:description" content="<?php echo $game['game_description'] ?>">
+    <meta name="twitter:image" content="<?php echo $game['game_image_url'] ?>">
+    <meta name="twitter:image:alt" content="<?php echo $game['game_name'] ?>">
+    <meta name="twitter:domain" content="<?php echo $_SERVER['HTTP_HOST'] ?>">
+  <?php } ?>
+  <?php if (strlen($zon['page'][0]) != 0 && IsCategory($zon['page'][0])) {
+    $category_desc = $zon['config']['category_desc'];
+    $category_name = $zon['page'][0] ?? $_GET['u'];
+    $category = CategoryDataBySlug($category_name);
+    $title = str_replace("[name]", $category['name'] ?? '', $category_desc);
+    ?>
+    <meta name="description" content="<?php echo $title ?>" />
+    <link rel="canonical" href="<?php echo $site_url . $category['slug'] ?>" />
+  <?php } ?>
+  <meta name="robots" content="index, follow">
+  <link rel="shortcut icon" href="<?php echo $site_url . 'static/img/logo/' . $zon['config']['site_favicon'] ?>" />
+  <title><?= $zon['title'] ?></title>
+  <link rel="stylesheet" href="<?= LoadStaticThemeFile("css/style.css") ?>" />
+  <script src="<?= LoadStaticThemeFile("js/tailwind.js") ?>"></script>
+  <script src="<?php echo $site_url ?>js/toast.min.js"></script>
+  <link rel="stylesheet" href="<?php echo $site_url ?>css/animate.css" />
+  <link rel="stylesheet" href="<?php echo $site_url ?>css/toast.min.css" />
+  <script src="<?php echo $site_url ?>js/wow.min.js"></script>
+  <script>zontal = { url: "<?php echo $site_url ?>", ui: <?php echo $zon['user']['id'] ?? 0; ?> }</script>
+  <style>
+    [data-zon-skin=dark] {
+      --common-color: rgb(255, 255, 255);
+      --common-color-muted: rgb(186, 186, 186);
+      --container-w: 1700px;
+      --sidebar-width: 100px;
+      --body-color: #17171a;
+      --theme-color:
+        <?= $zon['config']['site_color'] ?>;
+      --sidebar-svg-color: #5e5f62;
+      --sidebar-svg-hover-color: #fff;
+      --tooltip-bg-color: #222;
+      --tooltip-color-color: #fff;
+      --sidebar-option-hover-bg-color: #222;
+      --search-bg-color: #141414;
+      --search-svg-color: #fff;
+      --game-card-radius: 10px;
+      /* --game-interact-bg-color: transparent; */
+      --badge-box-bg-color: #111;
+      --badge-box-border-color: #111;
+
+      --zon-body-bg-color: var(--body-color);
+      --zon-common-text-color: var(--common-color);
+      --zon-theme-color: var(--theme-color);
+      --zon-div-color: #999;
+      --zon-muted-color: #777;
+      --zon-more-button-bg-color: #222;
+      --zon-search-bg-color: #222;
+      --zon-search-hover-color: #333;
+      --zon-gmeta-bg-color: #222;
+      --zon-overlay-bg-color: #000000af;
+      --zon-toggler-bg-color: #222;
+      --zon-icon-color: #fff;
+      --zon-dark-logo: block;
+      --zon-light-logo: none;
+      --zon-sidebar-shadow: 0px 0px 40px 0px #000;
+      --zon-blog-social-button-bg-hover-color: #01a73055;
+      --zon-comment-input-b-color: #222;
+    }
+
+    [data-zon-skin=light] {
+      --common-color: #000;
+      --common-color-muted: rgb(56, 55, 55);
+      --container-w: 1700px;
+      --sidebar-width: 100px;
+      --body-color: #fff;
+      --theme-color:
+        <?= $zon['config']['site_color'] ?>;
+      --sidebar-svg-color: #5e5f62;
+      --sidebar-svg-hover-color: #000000;
+      --tooltip-bg-color: #222;
+      --tooltip-color-color: #fff;
+      --sidebar-option-hover-bg-color: #e7e7e7;
+      --search-bg-color: #141414;
+      --search-svg-color: #fff;
+      --game-card-radius: 10px;
+      --badge-box-bg-color: #fff;
+      --badge-box-border-color: #dcdcdc;
+
+      --zon-body-bg-color: var(--body-color);
+      --zon-common-text-color: var(--common-color);
+      --zon-theme-color: var(--theme-color);
+      --zon-div-color: #999;
+      --zon-muted-color: #777;
+      --zon-more-button-bg-color: #222;
+      --zon-search-bg-color: #222;
+      --zon-search-hover-color: #333;
+      --zon-gmeta-bg-color: #222;
+      --zon-overlay-bg-color: #000000af;
+      --zon-toggler-bg-color: #222;
+      --zon-icon-color: #fff;
+      --zon-dark-logo: block;
+      --zon-light-logo: none;
+      --zon-sidebar-shadow: 0px 0px 40px 0px #000;
+      --zon-blog-social-button-bg-hover-color: #222;
+      --zon-comment-input-b-color: #222;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div style="z-index: 999999999;" class="ajax-loader">
+    <div class="loading"></div>
+  </div>
+  <div onclick="ToggleSidebar()" style="z-index: 99999;" class="sidebar-toggle hidden">
+    <img src="<?= $zon['logo'] ?>" />
+  </div>
+
+  <div class="app_start">
+    <div style="z-index: 999;" class="sticky top-0 h-[100vh]">
+      <div id="sidebar" class="sidebar flex relative justify-between flex-col items-center">
+        <?= LoadFile2("sidebar/content") ?>
+      </div>
+      <!-- search drawer  -->
+      <?= LoadFile2('search/content') ?>
+    </div>
+
+    <main class="page-content app_content scroll-none px-6">
+      <div class="zon-wrapper">
+        <?php // <header class="zon-header effect">
+        // echo LoadFile2("header/content") 
+        // </header>
+        ?>
+        <div class="mb-12"></div>
+        <div id="content" class="app-content-inner">
+          <?= $zon['content'] ?>
+
+        </div>
+      </div>
+      <div class="flex absolute bottom-[20px] w-full justify-center items-center flex-col gap-2">
+        <ul class="flex gap-4 flex-wrap">
+          <?php foreach (getPages() as $page) { ?>
+            <li><a class="text-sm text-[var(--sidebar-svg-color)] capitalize hover:underline"
+                aria-label="<?= $page['title'] ?>"
+                href="<?= $site_url . 'page/' . $page['id'] . '/' . makeSlug($page['title']) . '/' ?>"><?= $page['title'] ?></a>
+            </li>
+          <?php } ?>
+        </ul>
+        <p class="text-xs text-[var(--sidebar-svg-color)]">&copy; <?= $zon['config']['site_name'] ?> all rights reserved
+          <?= date("Y") ?>
+        </p>
+      </div>
+    </main>
+  </div>
+
+  <script src="<?= LoadStaticThemeFile("js/jquery.min.js") ?>"></script>
+  <script>
+
+    $(document).ready(function () {
+
+
+
+      $(document).on("click", ".hide-bar", (event) => {
+        var container = $(event.target.closest(".hide-bar").parentNode);
+        container.addClass("hide");
+      })
+
+      var gameFrame = $("#game-frame");
+      if (gameFrame.length) {
+        var gameFrameSrc = gameFrame.attr("data-frame-src");
+        if (gameFrameSrc.includes("gamedistribution")) {
+          gameFrame.attr("data-frame-src", gameFrameSrc + "?gd_sdk_referrer_url=https://gamedistribution.com/games/cooking-festival");
+        }
+      }
+
+
+      // for full 
+      var is_fullscreen = false;
+      var gameContainer = $(".game-player").length ? $(".game-player") : $(document.documentElement);
+
+      $(document).on("click", "#fullscreenButton", (event) => {
+        open_fullscreen(event.target.closest("#fullscreenButton").parentNode.parentNode.parentNode);
+      });
+
+      function open_fullscreen(Gcontainer) {
+        var game = $("#game");
+
+        if (is_fullscreen) {
+          // Exit fullscreen
+          is_fullscreen = false;
+          // gameContainer.removeClass("full on-frame");
+          // $(Gcontainer)
+          $(Gcontainer).removeClass("full");
+          $(".game-interact").removeClass("hide");
+          exitFullscreen();
+        } else {
+          // Enter fullscreen
+          is_fullscreen = true;
+          enterFullscreen(gameContainer[0]);
+          // gameContainer.addClass("full on-frame");
+          $(Gcontainer).addClass("full");
+        }
+      }
+
+      function enterFullscreen(element) {
+        if (element.requestFullscreen) {
+          element.requestFullscreen();
+        } else if (element.mozRequestFullScreen) { /* Firefox */
+          element.mozRequestFullScreen();
+        } else if (element.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+          element.webkitRequestFullscreen();
+        } else if (element.msRequestFullscreen) { /* IE/Edge */
+          element.msRequestFullscreen();
+        }
+      }
+
+      function exitFullscreen() {
+        var doc = document;
+        if (doc.exitFullscreen) {
+          doc.exitFullscreen();
+        } else if (doc.mozCancelFullScreen) { /* Firefox */
+          doc.mozCancelFullScreen();
+        } else if (doc.webkitExitFullscreen) { /* Chrome, Safari and Opera */
+          doc.webkitExitFullscreen();
+        } else if (doc.msExitFullscreen) { /* IE/Edge */
+          doc.msExitFullscreen();
+        }
+
+        gameContainer.removeClass("full");
+        console.log("Exiting fullscreen mode");
+      }
+
+      // Event listener for exiting fullscreen
+      $(document).on("fullscreenchange", function () {
+        if (!document.fullscreenElement) {
+          // Update UI when exiting fullscreen
+          gameContainer.removeClass("full on-frame");
+          $(".game-interact").removeClass("hide");
+
+          if (is_fullscreen) {
+            $("#fullscreenButton").click();
+          }
+        }
+      });
+
+      function fullScreen() {
+        var gameContainer = $(".game-player");
+        gameContainer.toggleClass("full");
+      }
+
+
+
+      function LoadSearchResults(query, element) {
+        var c;
+        $.ajax({
+          url: `${window.zontal.url}/xhr/live-search.php`,
+          method: 'POST',
+          data: { query: query },
+          success: function (response) {
+            element.html(response);
+          },
+          error: function (xhr, status, error) {
+            console.error(xhr.responseText);
+          }
+        });
+      }
+
+
+      // $("#search-form").on("submit", (event) => {
+      //   event.preventDefault();
+      //   var input = $("#search-input");
+      //   LoadAjax(`/search?s=${input.val()}`);
+
+      //   console.log("hello world");
+      // });
+
+      $("#search-input").on("keyup", () => {
+        var input = $("#search-input");
+        if (input.val().length > 0) {
+          $("#search-result").addClass("active");
+          LoadSearchResults(input.val(), $("#search-result"));
+        } else {
+          $("#search-result").removeClass("active");
+        }
+      })
+
+      function SidebarActions(type) {
+        if (type === 'add') {
+          $(".sidebar").toggleClass("search-bar-active");
+          setTimeout(() => {
+            $(".sidebar ~ .search-bar").toggleClass("sidebar-shadow");
+          }, 700);
+        }
+
+        if (type === 'remove') {
+          $(".sidebar").removeClass("search-bar-active");
+          setTimeout(() => {
+            $(".sidebar ~ .search-bar").toggleClass("sidebar-shadow");
+          }, 700);
+        }
+      }
+
+      function DeleteGameHistory(game_id, ip, element) {
+        $.ajax({
+          url: `${window.zontal.url}/xhr/delete-game-history.php`,
+          method: 'POST',
+          data: { game_id: game_id, ip: ip },
+          success: function (response) {
+            if (response === 'ok') {
+              element.remove();
+            }
+          },
+          error: function (xhr, status, error) {
+            console.error(xhr.responseText);
+          }
+        });
+      }
+
+      $(document).on("click", ".feedback-button", (event) => {
+        $(".report-popup").toggleClass("active");
+      })
+
+      $(document).on("click", ".send-report", (event) => {
+        var game_name = $(event.target.closest(".send-report")).data("game-name");
+        var problem = $("#report_textarea");
+        var game_id = $(event.target.closest(".send-report")).data("game-id");
+        $.ajax({
+          url: `${window.zontal.url}/xhr/report.php`,
+          method: 'POST',
+          data: { game_name: game_name, problem: problem.val(), game_id: game_id },
+          success: function (response) {
+            console.log(response);
+            if (response == 1) {
+              $(".report-popup").removeClass("active");
+              $(".thank-you-popup").addClass("active");
+              setTimeout(() => {
+                $(".thank-you-popup").removeClass("active");
+              }, 3300);
+            }
+          },
+          error: function (xhr, status, error) {
+            console.error(xhr.responseText);
+          }
+        });
+      })
+
+      $(document).on("click", "#search-option", () => {
+
+        if ($(".sidebar ~ .search-bar").attr("class").includes("active")) {
+          SidebarActions('remove');
+        } else {
+          SidebarActions('add');
+        }
+      });
+
+      $(document).on("click", ".remove-game", (event) => {
+        var id = $(event.target.closest(".remove-game")).data("id");
+        var ip = $(event.target.closest(".remove-game")).data("ip");
+
+        DeleteGameHistory(id, ip, $(event.target.closest(".remove-game").parentNode)[0]);
+      });
+
+      $(document).on("click", (event) => {
+        if (!event.target.closest("#search-option") && !event.target.closest(".search-bar")) {
+          SidebarActions('remove');
+        }
+      })
+
+      function LikeAjaxRequestUrl(url) {
+        return `${window.zontal.url}xhr/${url}.php`;
+      }
+
+      function LikeGame(ip, game_id, type) {
+        $.ajax({
+          url: LikeAjaxRequestUrl("like-dislike"),
+          method: 'POST',
+          data: { type: type, game_id: game_id, ip: ip },
+          success: function (response) {
+            // element.text(response);
+          },
+          error: function (xhr, status, error) {
+            console.error(xhr.responseText);
+          }
+        });
+      }
+
+      function Likes(type, id, element) {
+        var c;
+        $.ajax({
+          url: LikeAjaxRequestUrl("count-likes"),
+          method: 'POST',
+          data: { type: type, game_id: id },
+          success: function (response) {
+            var json = JSON.parse(response);
+            // element.text(response);
+            $("#like span").text(json.like);
+            $("#dislike span").text(json.dislike);
+            $
+          },
+          error: function (xhr, status, error) {
+            console.error(xhr.responseText);
+          }
+        });
+
+      }
+
+
+      $(document).on("click", ".like-button", function (event) {
+        $(".like-button").removeClass("active");
+        var thisButton = $(event.target.closest(".like-button"));
+        thisButton.toggleClass("active");
+
+        var id = thisButton.attr("id");
+        var game_id = thisButton.data("id");
+        var type = thisButton.data("action");
+
+        LikeGame('<?= $_SERVER['REMOTE_ADDR'] ?>', game_id, type);
+
+        var count = Likes(type, game_id, $(`#${id} span`));
+
+      });
+
+      // === Screens
+      var frame = $("#game-frame");
+      var playScreen = $("#play-screen");
+      var loadingScreen = $("#loading-screen");
+      // === Button 
+      var playButton = $("#game-play-button");
+      // === Progress 
+      var progressLine = $("#progressLine");
+
+      // Play button click event
+      $(document).on("click", "#game-play-button", function (event) {
+        // console.log("hello world");
+        // console.log("PLay Screen : ", $playScreen);
+        // console.log("Loading Screen : ", $loadingScreen);
+        $(event.target.closest("#play-screen")).addClass("d-none");
+        // loading screen 
+        $(event.target.closest("#play-screen").nextElementSibling).removeClass("d-none");
+        // $playScreen.addClass("d-none");
+        var frameSource = $(event.target.closest("#play-screen").nextElementSibling.nextElementSibling).data("frame-src");
+        if (frameSource.includes("gamedistribution")) {
+          frameSource = frameSource + "?gd_sdk_referrer_url=https://gamedistribution.com/games/cooking-festival";
+        }
+        $(event.target.closest("#play-screen").nextElementSibling.nextElementSibling).attr("src", frameSource);
+
+        // Update progress line
+        for (let i = 1; i <= 10; i++) {
+          setTimeout(() => { $(event.target.closest("#play-screen").nextElementSibling).find(".line").css("width", `${i * 10}%`) }, i * 400);
+        }
+
+        // setTimeout(function () {
+        //   loadingScreen.addClass("d-none");
+        // }, 16000);
+        // $(event.target.closest("#play-screen").nextElementSibling.nextElementSibling).on("load", function (event) {
+        // console.log($(event.target));
+        setTimeout(function () {
+          $(event.target.closest("#play-screen").nextElementSibling).addClass("d-none");
+        }, 14000);
+        // });
+      });
+
+      // Frame load event
+
+      // For sliding games
+      var $featuredGames = $(".featured-games .game-card");
+      if ($featuredGames.length > 0) {
+        $(document).on("click", ".featured-games .game-card", function () {
+          var $button = $(this);
+          var gameIcon = $button.data("game-icon");
+          var gameName = $button.data("game-name");
+          var gameImage = $button.data("bg-image");
+          var gameCategory = $button.data("game-category");
+          var gameCategoryLink = $button.data("game-category-link");
+          var gameLink = $button.data("game-link");
+
+          var $dynamicData = $("#dynamicContent");
+          $dynamicData.addClass("wow fadeInDown");
+          $dynamicData.find(".content-title").text(gameName);
+          $dynamicData.find(".content-title-sm").text(gameName);
+          $dynamicData.find(".content-icon").attr("src", gameIcon);
+          $dynamicData.find(".content-category").text(gameCategory).attr("href", gameCategoryLink);
+          $dynamicData.find(".play-button").attr("href", gameLink);
+          $dynamicData.find(".play-button").attr("data-href", "/" + gameLink.replace(window.zontal.url, ""));
+          addBgImage2(gameImage);
+
+          setTimeout(function () {
+            $dynamicData.removeClass("wow fadeInDown");
+          }, 1500);
+        });
+      }
+
+      // Function to add background image
+      function addBgImage2(src) {
+        var $element = $("#bg-game-img");
+        if ($element.length > 0) {
+          $element.css("background-image", `url(${src})`);
+        }
+      }
+
+      // AJAX handling for SPA
+      var $content = $("#content");
+      var $ajaxLoader = $(".ajax-loader");
+      var $loader = $(".ajax-loader .loading");
+
+      function ajaxRequestUrl(url) {
+        return `<?= routerLink("link2.php?u=") ?>${url}`;
+      }
+
+      function LoadAjax(url) {
+        $ajaxLoader.addClass("active");
+        $loader.css({ width: "30%" });
+        SidebarActions('remove');
+        $.ajax({
+          url: ajaxRequestUrl(url),
+          method: 'GET', // or 'POST', 'PUT', 'DELETE', etc. depending on your API
+          dataType: "html",
+          success: function (response) {
+            var json = JSON.parse(response);
+            for (let i = 4; i <= 9; i++) {
+              setTimeout(() => { $loader.css({ width: `${i * 10}%` }); }, (i - 3) * 300);
+            }
+
+            setTimeout(() => {
+              $content.html(json.html);
+              history.pushState({ foo: "bar" }, json.title, "<?= IS_DEV ?>" + url);
+              $("title").text(json.title);
+              $loader.css({ width: "100%" });
+
+
+
+            }, 1900);
+
+            setTimeout(() => {
+              $(document).scrollTop(-100);
+              $ajaxLoader.removeClass("active");
+              $loader.css({ width: "0%" });
+
+            }, 2200);
+          },
+          error: function (xhr, status, error) {
+            console.error(xhr.responseText);
+          }
+        });
+      }
+
+      <?php if ($zon['config']['is_spa'] == 1) { ?>
+        // Event listener for AJAX links
+        $(document).on("click", "a[data-ajax=true]", function (event) {
+          event.preventDefault();
+          var url = $(event.target.closest("a[data-ajax]")).attr("data-href");
+          if (url !== undefined) {
+            LoadAjax(url);
+
+          }
+        });
+
+        // Handle browser back/forward buttons
+        $(window).on("popstate", function () {
+          var url = window.location.href.replace("<?= routerLink("") ?>", "");
+          LoadAjax("/" + url);
+
+          var theURL = window.location.href;
+          var theRURL = url;
+          $(".sidebar li.active").removeClass("active");
+
+          console.log(url);
+
+          if (theRURL === 'popular-games') {
+            $(".sidebar li.popular-games").addClass("active");
+          } else if (theRURL === 'new-games') {
+            $(".sidebar li.new-games").addClass("active");
+          } else if (theRURL === 'random-play') {
+            $(".sidebar li.random-play").addClass("active");
+          } else if (theRURL === 'blogs') {
+            $(".sidebar li.blogs").addClass("active");
+          } else if (theRURL === 'liked-games') {
+            $(".sidebar li.liked-games").addClass("active");
+          } else if (theRURL === 'recent-play-games') {
+            $(".sidebar li.recent-play-games").addClass("active");
+          }
+
+
+        });
+      <?php } ?>
+    });
+  </script>
+  <script> new WOW().init();  </script>
+  <script src="<?= LoadStaticThemeFile('js/dorado.js') ?>"></script>
+  <script src="<?= LoadStaticThemeFile('js/main.js') ?>"></script>
+</body>
+
+</html>

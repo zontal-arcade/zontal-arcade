@@ -1,0 +1,143 @@
+<?php global $site_url, $zon; ?>
+<a <?php // data-ajax="true" data-href="/" ?> href="<?= $site_url ?>" href="<?= $site_url ?>" class="logo not-style">
+  <img src="<?= $zon['logo'] ?>" alt="<?= $zon['config']['site_name'] ?>">
+</a>
+<ul class="relative">
+  <li tooltip="Explore" class="tooltip-right <?= path() === '/' ? 'active' : '' ?>">
+    <a aria-label="home page" name="home" href="<?= $site_url ?>">
+      <svg width="20px" height="20px" viewBox="0 0 24 24" stroke-width="2" fill="none"
+        xmlns="http://www.w3.org/2000/svg" color="#000000">
+        <path d="M10.5857 10.5857L16.9496 7.0502L13.4141 13.4142L7.05012 16.9497L10.5857 10.5857Z" stroke="#000000"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        </path>
+        <path
+          d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+          stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        </path>
+      </svg>
+    </a>
+  </li>
+  <li id="search-option" tooltip="Search" class="tooltip-right <?= path() === 'search' ? 'active' : '' ?>">
+    <a aria-label="search button" name="search" class="cursor-pointer">
+      <svg width="20px" height="20px" viewBox="0 0 24 24" stroke-width="2" fill="none"
+        xmlns="http://www.w3.org/2000/svg" color="#000000">
+        <path d="M17 17L21 21" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path
+          d="M3 11C3 15.4183 6.58172 19 11 19C13.213 19 15.2161 18.1015 16.6644 16.6493C18.1077 15.2022 19 13.2053 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11Z"
+          stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        </path>
+      </svg>
+    </a>
+  </li>
+  <?php if (POPULAR_GAMES != 0) { ?>
+    <li tooltip="Popular Games" class="tooltip-right popular-games <?= path() === 'popular-games' ? 'active' : '' ?>">
+      <a aria-label="popular games page" name="popular_games" data-ajax="true" data-href="/popular-games" href="<?= $site_url ?>popular-games">
+        <svg width="20px" height="20px" viewBox="0 0 24 24" stroke-width="2" fill="none"
+          xmlns="http://www.w3.org/2000/svg" color="#000000">
+          <path d="M13 10V3L5 14H11V21L19 10H13Z" stroke="#000000" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round"></path>
+        </svg>
+      </a>
+    </li>
+  <?php } ?>
+  <?php if (NEW_GAMES != 0) { ?>
+    <li tooltip="New Release" class="tooltip-right new-games <?= path() === 'new-games' ? 'active' : '' ?>">
+      <a aria-label="new release games page" name="new_games" data-ajax="true" data-href="/new-games" href="<?= $site_url ?>new-games">
+        <svg width="20px" height="20px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+          xmlns="http://www.w3.org/2000/svg" color="#000000">
+          <path
+            d="M15.8189 13.3287L10.4948 19.3183C9.69924 20.2134 8.30076 20.2134 7.50518 19.3183L2.18109 13.3287C1.50752 12.571 1.50752 11.429 2.18109 10.6713L7.50518 4.68167C8.30076 3.78664 9.69924 3.78664 10.4948 4.68167L15.8189 10.6713C16.4925 11.429 16.4925 12.571 15.8189 13.3287Z"
+            stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          </path>
+          <path
+            d="M12 6.375L13.5052 4.68167C14.3008 3.78664 15.6992 3.78664 16.4948 4.68167L21.8189 10.6713C22.4925 11.429 22.4925 12.571 21.8189 13.3287L16.4948 19.3183C15.6992 20.2134 14.3008 20.2134 13.5052 19.3183L12 17.625"
+            stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          </path>
+        </svg>
+      </a>
+    </li>
+  <?php } ?>
+  <li tooltip="Random Play Games" class="tooltip-right random-play <?= path() === 'random-play' ? 'active' : '' ?>">
+    <a aria-label="random play" name="random_play" data-ajax="true" data-href="/random-play" href="<?= $site_url ?>random-play">
+      <svg width="20px" height="20px" viewBox="0 0 24 24" stroke-width="2" fill="none"
+        xmlns="http://www.w3.org/2000/svg" color="#000000">
+        <path
+          d="M2 17V7C2 4.79086 3.79086 3 6 3H9.9C10.2314 3 10.5 3.26863 10.5 3.6V20.4C10.5 20.7314 10.2314 21 9.9 21H6C3.79086 21 2 19.2091 2 17Z"
+          stroke="#000000" stroke-width="2"></path>
+        <path
+          d="M6.5 8C7.05228 8 7.5 7.55228 7.5 7C7.5 6.44772 7.05228 6 6.5 6C5.94772 6 5.5 6.44772 5.5 7C5.5 7.55228 5.94772 8 6.5 8Z"
+          fill="#000000" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path
+          d="M17.5 14C18.0523 14 18.5 13.5523 18.5 13C18.5 12.4477 18.0523 12 17.5 12C16.9477 12 16.5 12.4477 16.5 13C16.5 13.5523 16.9477 14 17.5 14Z"
+          fill="#000000" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path
+          d="M22 17V7C22 4.79086 20.2091 3 18 3H14.1C13.7686 3 13.5 3.26863 13.5 3.6V20.4C13.5 20.7314 13.7686 21 14.1 21H18C20.2091 21 22 19.2091 22 17Z"
+          stroke="#000000" stroke-width="2"></path>
+      </svg>
+    </a>
+  </li>
+  <?php if (BLOGS != 0) { ?>
+    <li tooltip="Blogs" class="tooltip-right blogs <?= path() === 'blogs' ? 'active' : '' ?>">
+      <a aria-label="blogs" name="blogs" data-ajax="true" data-href="/blogs" href="<?= $site_url ?>blogs">
+        <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8 6C8 4.89543 8.89543 4 10 4H30L40 14V42C40 43.1046 39.1046 44 38 44H10C8.89543 44 8 43.1046 8 42V6Z"
+            fill="none" stroke="#000000" stroke-width="3" stroke-linejoin="round" />
+          <path d="M16 20H32" stroke="#000000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M16 28H32" stroke="#000000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </a>
+    </li>
+  <?php } ?>
+
+  <div class="hover-ball"></div>
+</ul>
+<ul class="relative">
+  <?php if (LIKES != 0) { ?>
+    <li tooltip="Your Liked Games" class="tooltip-right count-badges liked-games <?= path() === 'liked-games' ? 'active' : '' ?>"
+      count="1">
+      <a aria-label="liked games" name="liked_games" data-ajax="true" data-href="/liked-games" href="<?= $site_url ?>liked-games">
+        <svg width="20px" height="20px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+          xmlns="http://www.w3.org/2000/svg" color="#000000">
+          <path
+            d="M22 8.86222C22 10.4087 21.4062 11.8941 20.3458 12.9929C17.9049 15.523 15.5374 18.1613 13.0053 20.5997C12.4249 21.1505 11.5042 21.1304 10.9488 20.5547L3.65376 12.9929C1.44875 10.7072 1.44875 7.01723 3.65376 4.73157C5.88044 2.42345 9.50794 2.42345 11.7346 4.73157L11.9998 5.00642L12.2648 4.73173C13.3324 3.6245 14.7864 3 16.3053 3C17.8242 3 19.2781 3.62444 20.3458 4.73157C21.4063 5.83045 22 7.31577 22 8.86222Z"
+            stroke="#000000" stroke-width="2" stroke-linejoin="round"></path>
+        </svg>
+      </a>
+    </li>
+  <?php } ?>
+  <?php if (GAME_HISTORY != 0) { ?>
+    <li tooltip="Your Recent Play Games"
+      class="tooltip-right count-badges recent-play-games <?= path() === 'recent-play-games' ? 'active' : '' ?>" count="1">
+      <a aria-label="recent play games" name="recent_play" data-ajax="true" data-href="/recent-play-games" href="<?= $site_url ?>recent-play-games">
+        <svg width="20px" height="20px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+          xmlns="http://www.w3.org/2000/svg" color="#000000">
+          <path d="M12 6L12 12L18 12" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          </path>
+          <path
+            d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+            stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          </path>
+        </svg>
+      </a>
+    </li>
+  <?php } ?>
+
+  <li onclick="ChangeTheme()" id="themeChanger" tooltip="Theme Changer"
+    class="tooltip-right no-focus theme-changer relative">
+    <a aria-label="theme changer" name="theme_changer"" class="cursor-pointer">
+      <svg id="LightIcon" class="hiddens" xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="none"
+        stroke-width="1.5" viewBox="0 0 24 24" color="#000000">
+        <path stroke="#000000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"
+          d="M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12ZM22 12h1M12 2V1M12 23v-1M20 20l-1-1M20 4l-1 1M4 20l1-1M4 4l1 1M1 12h1">
+        </path>
+      </svg>
+      <svg id="DarkIcon" class="hiddens" xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="none"
+        stroke-width="3" viewBox="0 0 24 24" color="#000000">
+        <path stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+          d="M3 11.507a9.493 9.493 0 0 0 18 4.219c-8.507 0-12.726-4.22-12.726-12.726A9.494 9.494 0 0 0 3 11.507Z">
+        </path>
+      </svg>
+    </a>
+  </li>
+  <div class="hover-ball"></div>
+</ul>

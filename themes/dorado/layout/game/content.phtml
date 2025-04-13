@@ -1,0 +1,319 @@
+<?php
+global $data, $zon, $site_url, $page;
+if (isset($_GET['u'])) {
+    $game_name = str_replace("/", "", $_GET['u']);
+} else {
+    $game_name = $zon['page'][0];
+}
+
+
+
+$data = runner("SELECT * FROM zon_games WHERE game_slug='$game_name'")[0];
+$category_name = $data['game_category'];
+$category_data = runner("SELECT * FROM zon_category WHERE name='$category_name'")[0];
+
+
+add_views($data['id']);
+add_recent_play_games($data['id']);
+?>
+<div style="min-height: 39vh;" class="active-game-img">
+    <div class="overlay"></div>
+    <div style="background-image: url(<?= $data['game_banner_url'] === '' ? $data['game_image_url'] : $data['game_banner_url'] ?>);"
+        id="bg-game-img" class="image"></div>
+</div>
+<div class="report-popup shadow-lg">
+    <div class="header flex justify-between items-center gap-2">
+        <div class="left flex items-center gap-2">
+            <div class="symbol flex justify-center items-center h-10 w-10 rounded-full">
+                <svg width="20px" height="20px" stroke-width="1.1" viewBox="0 0 24 24" fill="none"
+                    xmlns="http://www.w3.org/2000/svg" color="#8c8c8c">
+                    <path style="stroke: var(--common-color);"
+                        d="M5 15L5.95039 4.54568C5.97849 4.23663 6.23761 4 6.54793 4H20.343C20.6958 4 20.9725 4.30295 20.9405 4.65432L20.0496 14.4543C20.0215 14.7634 19.7624 15 19.4521 15H5ZM5 15L4.4 21"
+                        stroke="#000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    </path>
+                </svg>
+            </div>
+            <div class="text">
+                <div class="font-bold text-xs text-gray-500 uppercase">WHAT BUG DID YOU FIND IN</div>
+                <div class="font-bold text-lg text-[var(--common-color)] capitalize">
+                    <?= $data['game_name'] ?>?
+                </div>
+            </div>
+        </div>
+        <div class="close-popup">
+            <button onclick="this.parentNode.parentNode.parentNode.classList.remove('active')"
+                class="h-10 w-10 flex justify-center items-center active:scale-1.1 rounded-full hover:bg-[var(--sidebar-option-hover-bg-color)]">
+                <svg width="20px" height="20px" stroke-width="1.1" viewBox="0 0 24 24" fill="none"
+                    xmlns="http://www.w3.org/2000/svg" color="#8c8c8c">
+                    <path
+                        d="M6.75827 17.2426L12.0009 12M17.2435 6.75736L12.0009 12M12.0009 12L6.75827 6.75736M12.0009 12L17.2435 17.2426"
+                        stroke="#000" style="stroke: var(--theme-color);" stroke-width="3" stroke-linecap="round"
+                        stroke-linejoin="round"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+    <div class="body">
+        <textarea id="report_textarea" class="text-sm"
+            placeholder="Help us understand the bug you found... and please only share info on the bug itself"></textarea>
+
+        <svg style="position: absolute; bottom: 0; left: 0" width="176" height="88" viewBox="0 0 176 88" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <path
+                d="m109.1 128.5 14 118.9-42.2-37-8.3 23.2-30.4-22.3-55.5 66.6 4.2-90.2-75.3 15.7 74.4-77-14.2-112.2 50.4 32.5L52 26.3l23 31.1 67.7-31.1-33.7 102.2Z"
+                fill="#FFD100" />
+            <path d="m26.2 46.7 25.9-20.4v37L26.2 46.8Z" fill="#FFC500" />
+            <path d="M75 57.5 52.1 26.3v37l4.2 2.8L75 57.5Z" fill="#FFED85" />
+            <path d="m56.3 128.5-40 25 25.3-80.7 14.7 55.7Z" fill="#FF9E00" />
+            <path d="m41.6 72.8 101.2-46.5-86.5 102.2-14.7-55.7Z" fill="#FFAF00" />
+            <path d="m-24.2 14.2 80.5 52-14.7 6.6-65.8-58.6Z" fill="#FFDC00" />
+            <path d="m41.6 72.8-126 130.6 100.8-49.9 25.2-80.7Z" fill="#FFC500" />
+        </svg>
+
+        <div class="flex justify-between">
+            <div></div>
+            <button data-game-name="<?= $data['game_name'] ?>" data-game-id="<?= $data['id'] ?>"
+                class="mt-6 bg-[var(--theme-color)] px-6 py-2 send-report text-white hover:px-8 font-bold rounded-full">Send</button>
+        </div>
+
+    </div>
+</div>
+<div class="thank-you-popup">
+    Thank you 😊
+</div>
+<div class="app_game">
+    <div class="game-details">
+        <div class="flex gap-6">
+            <img class="game-icon" src="<?= $data['game_image_url'] ?>" alt="<?= $data['game_name'] ?>">
+            <div class="empty-class">
+                <h2 class="text-4xl text-[var(--common-color)]"><?= $data['game_name'] ?></h2>
+                <p class="text-md text-[var(--common-color-muted)] mt-4"><?= $data['game_description'] ?></p>
+            </div>
+        </div>
+        <a class="category-badge px-6 py-2 text-xs bg-[<?= predictColor($data['game_category']) ?>] rounded-full mt-6 block w-fit uppercase font-bold"
+            data-ajax="true" data-href="/<?= $category_data['slug'] ?>"
+            href="<?= $site_url . $category_data['slug'] ?>"><?= $category_data['slug'] ?></a>
+    </div>
+    <div class="flex justify-center items-center gap-4">
+        <div class="game-page-space gps-1 sticky top-0">
+            <?= getAdById(4, 'code') ? getAdById(4, 'code') : '' ?>
+        </div>
+        <div class="game-player relative">
+            <!-- play screen  -->
+            <div id="play-screen" class="play-screen rounded-lg">
+                <div class="flex items-center justify-center block w-full">
+                    <div class="play-screen-space">
+                        <?= getAdById(1, 'code') ?>
+                    </div>
+                </div>
+                <div class="game-mini-details">
+                    <div class="card">
+                        <div class="flex justify-center">
+                            <img class="h-[100px] w-[100px] object-cover rounded-2xl"
+                                src="<?= $data['game_image_url'] ?>" alt="<?= $data['game_image_url'] ?>">
+                        </div>
+                        <h4 class="text-lg font-semibold mt-3 text-[var(--common-color)]"><?= $data['game_name'] ?></h4>
+                        <button onclick="PlayGame()" id="game-play-button" class="play-button">
+                            <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg" color="#000000" stroke-width="2">
+                                <path
+                                    d="M6.90588 4.53682C6.50592 4.2998 6 4.58808 6 5.05299V18.947C6 19.4119 6.50592 19.7002 6.90588 19.4632L18.629 12.5162C19.0211 12.2838 19.0211 11.7162 18.629 11.4838L6.90588 4.53682Z"
+                                    fill="#000000" stroke="#000000" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round"></path>
+                            </svg> Play Now
+                        </button>
+                    </div>
+                </div>
+                <div class="flex items-center justify-center block w-full">
+                    <div class="play-screen-space">
+                        <?= getAdById(2, 'code') ?>
+                    </div>
+                </div>
+            </div>
+
+            <!-- loading screen  -->
+            <div id="loading-screen" class="loading-screen d-none rounded-lg">
+                <div class="flex items-center justify-center block w-full">
+                    <div class="play-screen-space">
+                        <?= getAdById(3, 'code') ?>
+                    </div>
+                </div>
+                <div class="empt-class h-full">
+                    <img src="<?= $zon['logo'] ?>" class="loading-logo" />
+                    <div class="progress">
+                        <div id="progressLine" class="line"></div>
+                    </div>
+                </div>
+                <div class="flex items-center justify-center block w-full">
+                    <div class="play-screen-space">
+                        <?= getAdById(2, 'code') ?>
+                    </div>
+                </div>
+            </div>
+
+            <iframe id="game-frame" data-frame-src="<?= $data['game_url'] ?>"></iframe>
+            <div class="game-interact relative flex items-center justify-between py-3 px-3">
+                <div
+                    class="hide-bar flex justify-center items-center px-6 select-none text-[var(--common-color)] border border-[var(--common-color)] gap-3 py-2 rounded-full text-xs">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        style="fill: var(--common-color);" class="bi bi-eye-slash" viewBox="0 0 16 16">
+                        <path style="stroke: var(--common-color);"
+                            d="M13.359 11.238C15.06 9.72 16 8 16 8s-3-5.5-8-5.5a7 7 0 0 0-2.79.588l.77.771A6 6 0 0 1 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755q-.247.248-.517.486z" />
+                        <path style="stroke: var(--common-color);"
+                            d="M11.297 9.176a3.5 3.5 0 0 0-4.474-4.474l.823.823a2.5 2.5 0 0 1 2.829 2.829zm-2.943 1.299.822.822a3.5 3.5 0 0 1-4.474-4.474l.823.823a2.5 2.5 0 0 0 2.829 2.829" />
+                        <path style="stroke: var(--common-color);"
+                            d="M3.35 5.47q-.27.24-.518.487A13 13 0 0 0 1.172 8l.195.288c.335.48.83 1.12 1.465 1.755C4.121 11.332 5.881 12.5 8 12.5c.716 0 1.39-.133 2.02-.36l.77.772A7 7 0 0 1 8 13.5C3 13.5 0 8 0 8s.939-1.721 2.641-3.238l.708.709zm10.296 8.884-12-12 .708-.708 12 12z" />
+                    </svg> Hide this bar
+                </div>
+                <div class="game-mini-details flex gap-4 items-center">
+                    <img class="h-12 w-12 object-cover rounded-lg" src="<?= $data['game_image_url'] ?>" />
+                    <div class="flex game-text-details flex-col">
+                        <h5 class="text-[var(--common-color)] line-limit-1 font-semibold line-limit-1">
+                            <?= $data['game_name'] ?>
+                        </h5>
+                        <a data-ajax="true" data-href="/<?= $category_data['slug'] ?>"
+                            class="text-sm text-[var(--common-color-muted)] line-limit-1"
+                            href="<?= $site_url . $category_data['slug'] ?>"><?= $category_data['name'] ?></a>
+                    </div>
+                </div>
+                <div class="right flex gap-2 items-center">
+                    <button tooltip="Like" id="like" data-id="<?= $data['id'] ?>" data-action="like"
+                        class="u-interact-button <?= IsGameLiked($_SERVER['REMOTE_ADDR'], $data['id'], 'zon_likes') > 0 ? 'active' : '' ?> tooltip-normal like-button">
+                        <svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-14yq2cq" focusable="false"
+                            aria-hidden="true" viewBox="0 0 24 24" width="24" height="24">
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                d="M10.1051 3.90453C10.1051 2.84042 10.9755 2 12.0215 2H12.1183C13.7773 2 15.1446 3.33088 15.1446 5V9H18.9711C21.2014 9 22.6959 11.3321 21.6755 13.3463L18.1295 20.3463C17.6137 21.3646 16.5645 22 15.4251 22H11.3546C11.1082 22 10.8627 21.9702 10.6236 21.9112L6.93101 21H5.02628C3.36726 21 2 19.6691 2 18V12C2 10.3309 3.36726 9 5.02628 9H7.19669L9.66081 5.35177C9.95107 4.92203 10.1051 4.41848 10.1051 3.90453ZM6.05257 11H5.02628C4.44713 11 4 11.46 4 12V18C4 18.54 4.44713 19 5.02628 19H6.05257V11ZM8.05257 19.2168V11.3061L11.3182 6.47121C11.8129 5.73871 12.0857 4.88122 12.1041 4H12.1183C12.6974 4 13.1446 4.45998 13.1446 5V9H12.1183C11.566 9 11.1183 9.44772 11.1183 10C11.1183 10.5523 11.566 11 12.1183 11H18.9711C19.7534 11 20.2183 11.7971 19.8914 12.4425L16.3454 19.4425C16.1747 19.7794 15.8207 20 15.4251 20H11.3546C11.2696 20 11.185 19.9897 11.1027 19.9694L8.05257 19.2168Z">
+                            </path>
+                        </svg>
+                        <span><?= num_rows("zon_likes", "game_id=" . $data['id']) ?></span>
+                    </button>
+                    <button tooltip="Dislike" id="dislike" data-id="<?= $data['id'] ?>" data-action="dislike"
+                        class="u-interact-button <?= IsGameLiked($_SERVER['REMOTE_ADDR'], $data['id'], 'zon_unlikes') > 0 ? 'active' : '' ?> tooltip-normal  like-button">
+                        <svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-14yq2cq" focusable="false"
+                            aria-hidden="true" viewBox="0 0 24 24" width="24" height="24">
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                d="M8.57484 4C8.17921 4 7.82522 4.22056 7.65455 4.55747L4.10855 11.5575C3.78161 12.2029 4.24657 13 5.02885 13H11.8817C12.434 13 12.8817 13.4477 12.8817 14C12.8817 14.5523 12.434 15 11.8817 15H10.8554V19C10.8554 19.54 11.3025 20 11.8817 20H11.8958C11.9142 19.1188 12.187 18.2613 12.6818 17.5288L15.9474 12.6939V4.78324L12.8972 4.03059C12.815 4.01029 12.7304 4 12.6454 4H8.57484ZM17.9474 5V13H18.9737C19.5528 13 19.9999 12.54 19.9999 12V6C19.9999 5.45998 19.5528 5 18.9737 5H17.9474ZM16.8033 15L14.3391 18.6482C14.0489 19.078 13.8948 19.5815 13.8948 20.0955C13.8948 21.1596 13.0245 22 11.9784 22H11.8817C10.2226 22 8.85538 20.6691 8.85538 19V15H5.02885C2.79852 15 1.30407 12.6679 2.32441 10.6537L5.87041 3.65368C6.38621 2.63545 7.43548 2 8.57484 2H12.6454C12.8917 2 13.1372 2.02982 13.3764 2.08884L17.0689 3H18.9737C20.6327 3 21.9999 4.33087 21.9999 6V12C21.9999 13.6691 20.6327 15 18.9737 15H16.8033Z">
+                            </path>
+                        </svg>
+                        <span><?= num_rows("zon_unlikes", "game_id=" . $data['id']) ?></span>
+                    </button>
+
+                    <!-- <button class="u-interact-button">
+                        <svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-14yq2cq" focusable="false"
+                            aria-hidden="true" viewBox="0 0 24 24">
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                d="M4.47368 6.78578C3.94666 7.79745 3.9392 9.02672 4.07146 9.70273C4.46989 11.7393 5.98381 14.0997 7.75719 15.9902C8.63197 16.9227 9.53387 17.7018 10.3315 18.2394C11.1783 18.8102 11.749 19 12 19C12.251 19 12.8217 18.8102 13.6685 18.2394C14.4661 17.7018 15.368 16.9227 16.2428 15.9902C18.0162 14.0997 19.5301 11.7393 19.9286 9.70273C20.0608 9.02672 20.0534 7.79745 19.5263 6.78578C19.2725 6.29849 18.9017 5.86627 18.3619 5.55002C17.82 5.23252 17.0529 5 15.96 5C14.7111 5 13.7204 5.56856 13.2125 6.32446C12.8891 6.80569 12.3638 6.94309 12 6.94309C11.6362 6.94309 11.1109 6.80569 10.7876 6.32446C10.2796 5.56856 9.28887 5 8.04003 5C6.94711 5 6.18001 5.23252 5.63809 5.55002C5.09831 5.86627 4.72752 6.29849 4.47368 6.78578ZM4.62707 3.82438C5.52816 3.29645 6.65797 3 8.04003 3C9.61785 3 11.0464 3.61724 12 4.64452C12.9536 3.61724 14.3822 3 15.96 3C17.342 3 18.4719 3.29645 19.3729 3.82438C20.2762 4.35357 20.8945 5.08322 21.3001 5.86176C22.0919 7.38172 22.0844 9.09982 21.8913 10.0867C21.3888 12.6555 19.5878 15.3476 17.7015 17.3585C16.7464 18.3766 15.7323 19.2603 14.7863 19.8979C13.8895 20.5023 12.8891 21 12 21C11.1109 21 10.1105 20.5023 9.21371 19.8979C8.26775 19.2603 7.25361 18.3766 6.29853 17.3585C4.41221 15.3476 2.61121 12.6555 2.10867 10.0867C1.91558 9.09982 1.90812 7.38172 2.69993 5.86176C3.1055 5.08322 3.72383 4.35357 4.62707 3.82438Z">
+                            </path>
+                        </svg>
+                    </button> -->
+                    <div class="divider"></div>
+                    <button tooltip="Report" class="u-interact-button tooltip-normal feedback feedback-button">
+                        <svg style="fill: none !important;" width="20px" height="20px" stroke-width="1.1"
+                            viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#8c8c8c">
+                            <path style="stroke: var(--common-color) !important; stroke-width: 2px"
+                                style="stroke: var(--common-color);"
+                                d="M5 15L5.95039 4.54568C5.97849 4.23663 6.23761 4 6.54793 4H20.343C20.6958 4 20.9725 4.30295 20.9405 4.65432L20.0496 14.4543C20.0215 14.7634 19.7624 15 19.4521 15H5ZM5 15L4.4 21"
+                                stroke="#000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            </path>
+                        </svg>
+                        <span>
+                            Report Bug
+                        </span>
+                    </button>
+
+                    <div class="divider"></div>
+
+                    <button id="fullscreenButton" tooltip="Full Screen"
+                        class="u-interact-button tooltip-normal fullScreen feedback">
+                        <svg id="fullscreen" class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-14yq2cq"
+                            focusable="false" aria-hidden="true" viewBox="0 0 24 24" width="24" height="24">
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                d="M4 2C2.89543 2 2 2.89543 2 4V8C2 8.55228 2.44772 9 3 9C3.55228 9 4 8.55228 4 8V5.41421L7.79289 9.20711C8.18342 9.59763 8.81658 9.59763 9.20711 9.20711C9.59763 8.81658 9.59763 8.18342 9.20711 7.79289L5.41421 4H8C8.55228 4 9 3.55228 9 3C9 2.44772 8.55228 2 8 2H4ZM16 2C15.4477 2 15 2.44772 15 3C15 3.55228 15.4477 4 16 4H18.5858L14.7929 7.79289C14.4024 8.18342 14.4024 8.81658 14.7929 9.20711C15.1834 9.59763 15.8166 9.59763 16.2071 9.20711L20 5.41421V8C20 8.55228 20.4477 9 21 9C21.5523 9 22 8.55228 22 8V4C22 2.89543 21.1046 2 20 2H16ZM16 20L18.5858 20L14.7929 16.2071C14.4024 15.8166 14.4024 15.1834 14.7929 14.7929C15.1834 14.4024 15.8166 14.4024 16.2071 14.7929L20 18.5858V16C20 15.4477 20.4477 15 21 15C21.5523 15 22 15.4477 22 16V20C22 21.1046 21.1046 22 20 22L16 22C15.4477 22 15 21.5523 15 21C15 20.4477 15.4477 20 16 20ZM4 18.5858L7.79289 14.7929C8.18342 14.4024 8.81658 14.4024 9.20711 14.7929C9.59763 15.1834 9.59763 15.8166 9.20711 16.2071L5.41421 20H8C8.55228 20 9 20.4477 9 21C9 21.5523 8.55228 22 8 22H4C2.89543 22 2 21.1046 2 20V16C2 15.4477 2.44772 15 3 15C3.55228 15 4 15.4477 4 16L4 18.5858Z">
+                            </path>
+                        </svg>
+                    </button>
+
+                    <button id="fullscreenButton" tooltip="Exit Screen"
+                        class="u-interact-button tooltip-normal feedback exitScreen d-none">
+                        <svg id="exitscreen" class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-14yq2cq"
+                            focusable="false" aria-hidden="true" viewBox="0 0 24 24">
+                            <path xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd"
+                                d="M17 18.4142L20.2929 21.7071C20.6834 22.0976 21.3166 22.0976 21.7071 21.7071C22.0976 21.3166 22.0976 20.6834 21.7071 20.2929L18.4142 17L21 17C21.5523 17 22 16.5523 22 16C22 15.4477 21.5523 15 21 15L17 15C15.8954 15 15 15.8954 15 17L15 21C15 21.5523 15.4477 22 16 22C16.5523 22 17 21.5523 17 21L17 18.4142ZM7 5.58578V3C7 2.44772 7.44772 2 8 2C8.55229 2 9 2.44772 9 3V7C9 8.10457 8.10457 9 7 9H3C2.44772 9 2 8.55229 2 8C2 7.44772 2.44772 7 3 7H5.58579L2.2929 3.70711C1.90237 3.31658 1.90237 2.68342 2.2929 2.29289C2.68342 1.90237 3.31659 1.90237 3.70711 2.29289L7 5.58578ZM21 9C21.5523 9 22 8.55229 22 8C22 7.44772 21.5523 7 21 7L18.4142 7L21.7071 3.70711C22.0976 3.31658 22.0976 2.68342 21.7071 2.2929C21.3166 1.90237 20.6834 1.90237 20.2929 2.2929L17 5.58579L17 3C17 2.44772 16.5523 2 16 2C15.4477 2 15 2.44772 15 3L15 7C15 8.10457 15.8954 9 17 9L21 9ZM3 15C2.44772 15 2 15.4477 2 16C2 16.5523 2.44772 17 3 17H5.58579L2.29289 20.2929C1.90237 20.6834 1.90237 21.3166 2.29289 21.7071C2.68342 22.0976 3.31658 22.0976 3.70711 21.7071L7 18.4142V21C7 21.5523 7.44772 22 8 22C8.55229 22 9 21.5523 9 21V17C9 15.8954 8.10457 15 7 15H3Z">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="game-page-space gps-2 sticky top-0">
+            <?= getAdById(5, 'code') ? getAdById(5, 'code') : '' ?>
+        </div>
+    </div>
+</div>
+<div class="related-games mt-16">
+    <h3 class="text-2xl mb-6 text-[var(--common-color)]">Related Games <a data-ajax="true"
+            data-href="/<?= $category_data['slug'] ?>" href="<?= $site_url . $category_data['slug'] ?>"
+            class="more ml-12">&RightArrow;</a></h3>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        <?php foreach (GameByCategoryWise($data['game_category'], '13') as $game) {
+            $cn = $game['game_category'];
+            $c = runner("SELECT * FROM zon_category WHERE name='$cn'")[0];
+            $game['slug'] = $c['slug'];
+            ?>
+            <div class="game-card wow <?php echo $zon['config']['animate_class'] ?>">
+                <a data-ajax="true" data-href="/<?= $game['game_slug'] ?>" href="<?= $site_url . $game['game_slug'] ?>"
+                    data-logo-src="<?= $zon['logo'] ?>" class="h-[120px] game-poster">
+                    <div class="loader">
+                        <div class="fadeLogo">
+                            <img src="<?= $zon['logo'] ?>" />
+                        </div>
+                    </div>
+                    <img src="<?= $game['game_banner_url'] === '' ? $game['game_image_url'] : $game['game_banner_url'] ?>"
+                        onerror="this.previousElementSibling.classList.add('active')" loading="lazy"
+                        alt="<?= $game['game_name'] ?>" />
+
+                    <?php if ($game['game_played'] == 0) { ?>
+                        <div class="badge new">
+                            <svg width="20px" height="20px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                <path
+                                    d="M15.8189 13.3287L10.4948 19.3183C9.69924 20.2134 8.30076 20.2134 7.50518 19.3183L2.18109 13.3287C1.50752 12.571 1.50752 11.429 2.18109 10.6713L7.50518 4.68167C8.30076 3.78664 9.69924 3.78664 10.4948 4.68167L15.8189 10.6713C16.4925 11.429 16.4925 12.571 15.8189 13.3287Z"
+                                    stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                </path>
+                                <path
+                                    d="M12 6.375L13.5052 4.68167C14.3008 3.78664 15.6992 3.78664 16.4948 4.68167L21.8189 10.6713C22.4925 11.429 22.4925 12.571 21.8189 13.3287L16.4948 19.3183C15.6992 20.2134 14.3008 20.2134 13.5052 19.3183L12 17.625"
+                                    stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                </path>
+                            </svg>
+                        </div>
+                    <?php } ?>
+                    <div class="played-badge">
+                        <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M32 18H16C9.37258 18 4 23.3726 4 30C4 36.6274 9.37258 42 16 42H32C38.6274 42 44 36.6274 44 30C44 23.3726 38.6274 18 32 18Z"
+                                fill="none" stroke="#000000" stroke-width="2" stroke-linejoin="round" />
+                            <path d="M16 26V34" stroke="#000000" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <path d="M12 30H20" stroke="#000000" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <path d="M24 16V9.71429H32V4" stroke="#000000" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <path
+                                d="M32 34C34.2091 34 36 32.2091 36 30C36 27.7909 34.2091 26 32 26C29.7909 26 28 27.7909 28 30C28 32.2091 29.7909 34 32 34Z"
+                                fill="none" stroke="#000000" stroke-width="2" stroke-linejoin="round" />
+                        </svg>
+                        <span><?= $game['game_played'] ?></span>
+                    </div>
+                </a>
+                <div class="game-details flex flex-col px-2 mt-2">
+                    <a data-ajax="true" data-href="/<?= $game['game_slug'] ?>"
+                        class="text-2xl text-[var(--common-color)] game-name"
+                        href="<?= $site_url . $game['game_slug'] ?>"><?= $game['game_name'] ?></a>
+                    <a data-ajax="true" data-href="/<?= $game['slug'] ?>"
+                        class="text-md text-[var(--common-color-muted)] mt-1 capitalize"
+                        href="<?= $site_url . $game['slug'] ?>"><?= $game['game_category'] ?></a>
+                </div>
+            </div>
+        <?php } ?>
+    </div>
+</div>

@@ -1,0 +1,121 @@
+<?php global $site_url, $zon; ?>
+<div class="search-bar scroll-none">
+    <form id="search-form" action="<?= $site_url ?>search/" class="search-form sticky top-0">
+        <input id="search-input" required onkeyup="this.value = this.value.trim()" name="s" type="text" placeholder="What do you want to play today?" />
+        <button aria-label="search button" name="search_button" class="perform-button">
+            <svg width="20px" height="20px" viewBox="0 0 24 24" stroke-width="2" fill="none"
+                xmlns="http://www.w3.org/2000/svg" color="#000000">
+                <path d="M17 17L21 21" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                </path>
+                <path
+                    d="M3 11C3 15.4183 6.58172 19 11 19C13.213 19 15.2161 18.1015 16.6644 16.6493C18.1077 15.2022 19 13.2053 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11Z"
+                    stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+        </button>
+    </form>
+
+
+    <div id="search-result" class="scroll-none"></div>
+
+    <div class="categories">
+        <?php foreach (getCategories() as $category) { ?>
+            <a data-ajax="true" data-href="/<?= $category['slug'] ?>" class="item"
+                href="<?= $site_url . $category['slug'] ?>"><?= $category['name'] ?> <!-- <div style="padding-top: 1.6px; padding-bottom: 1.6px" class="bg-[#01a73055] px-1.5 text-white rounded-full flex justify-center items-center "><?= formatNumber(count(runner("SELECT * FROM zon_games WHERE game_category='" . $category['name'] . "'"))) ?></div> --> </a>
+        <?php } ?>
+    </div>
+
+    <section class="new-games mt-8">
+        <h2 class="text-lg flex items-center text-[var(--common-color)] gap-2 mb-6">
+            <svg width="24px" height="24px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                xmlns="http://www.w3.org/2000/svg" color="rgb(2, 152, 19)">
+                <path
+                    d="M15.8189 13.3287L10.4948 19.3183C9.69924 20.2134 8.30076 20.2134 7.50518 19.3183L2.18109 13.3287C1.50752 12.571 1.50752 11.429 2.18109 10.6713L7.50518 4.68167C8.30076 3.78664 9.69924 3.78664 10.4948 4.68167L15.8189 10.6713C16.4925 11.429 16.4925 12.571 15.8189 13.3287Z"
+                    stroke="rgb(2, 152, 19)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                </path>
+                <path
+                    d="M12 6.375L13.5052 4.68167C14.3008 3.78664 15.6992 3.78664 16.4948 4.68167L21.8189 10.6713C22.4925 11.429 22.4925 12.571 21.8189 13.3287L16.4948 19.3183C15.6992 20.2134 14.3008 20.2134 13.5052 19.3183L12 17.625"
+                    stroke="rgb(2, 152, 19)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                </path>
+            </svg> New Release
+        </h2>
+
+        <div class="mini-card-grid mt-6">
+            <?php
+            if (count(getNewGamesByLimit(10)) > 0) { ?>
+                <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-4 wow <?php echo $zon['config']['animate_class'] ?>">
+                    <?php foreach (getNewGamesByLimit(20) as $game) {
+                        $cn = $game['game_category'];
+                        $c = runner("SELECT * FROM zon_category WHERE name='$cn'")[0];
+                        $game['slug'] = $c['slug']; ?>
+                        <div class="game-card w-full ">
+                            <a data-ajax="true" data-href="/<?= $game['game_slug'] ?>"
+                                href="<?= $site_url . $game['game_slug'] ?>" data-logo-src="<?= $zon['logo'] ?>"
+                                class=" game-poster">
+                                <div class="loader">
+                                    <div class="fadeLogo">
+                                        <img src="<?= $zon['logo'] ?>" alt="<?= $zon['config']['site_name'] ?>" />
+                                    </div>
+                                </div>
+                                <img src="<?= $game['game_banner_url'] === '' ? $game['game_image_url'] : $game['game_banner_url'] ?>"
+                                    onerror="this.previousElementSibling.classList.add('active')" loading="lazy"
+                                    alt="<?= $game['game_name'] ?>" />
+                                <?php if ($game['game_played'] >= $zon['config']['popular_views']) { ?>
+                                    <div class="badge hot">
+                                        <svg width="20px" height="20px" viewBox="0 0 24 24" stroke-width="2" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                            <path d="M13 10V3L5 14H11V21L19 10H13Z" stroke="#000000" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round">
+                                            </path>
+                                        </svg>
+                                    </div>
+                                <?php } ?>
+
+                                <?php if ($game['game_played'] == 0) { ?>
+                                    <div class="badge new">
+                                        <svg width="20px" height="20px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                            <path
+                                                d="M15.8189 13.3287L10.4948 19.3183C9.69924 20.2134 8.30076 20.2134 7.50518 19.3183L2.18109 13.3287C1.50752 12.571 1.50752 11.429 2.18109 10.6713L7.50518 4.68167C8.30076 3.78664 9.69924 3.78664 10.4948 4.68167L15.8189 10.6713C16.4925 11.429 16.4925 12.571 15.8189 13.3287Z"
+                                                stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            </path>
+                                            <path
+                                                d="M12 6.375L13.5052 4.68167C14.3008 3.78664 15.6992 3.78664 16.4948 4.68167L21.8189 10.6713C22.4925 11.429 22.4925 12.571 21.8189 13.3287L16.4948 19.3183C15.6992 20.2134 14.3008 20.2134 13.5052 19.3183L12 17.625"
+                                                stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            </path>
+                                        </svg>
+                                    </div>
+                                <?php } ?>
+                                <div class="played-badge">
+                                    <svg width="20" height="20" viewBox="0 0 48 48" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M32 18H16C9.37258 18 4 23.3726 4 30C4 36.6274 9.37258 42 16 42H32C38.6274 42 44 36.6274 44 30C44 23.3726 38.6274 18 32 18Z"
+                                            fill="none" stroke="#000000" stroke-width="2" stroke-linejoin="round" />
+                                        <path d="M16 26V34" stroke="#000000" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                        <path d="M12 30H20" stroke="#000000" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                        <path d="M24 16V9.71429H32V4" stroke="#000000" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                        <path
+                                            d="M32 34C34.2091 34 36 32.2091 36 30C36 27.7909 34.2091 26 32 26C29.7909 26 28 27.7909 28 30C28 32.2091 29.7909 34 32 34Z"
+                                            fill="none" stroke="#000000" stroke-width="2" stroke-linejoin="round" />
+                                    </svg>
+                                    <span><?= $game['game_played'] ?></span>
+                                </div>
+                            </a>
+                            <div class="game-details flex flex-col px-2 mt-2">
+                                <a data-ajax="true" data-href="/<?= $game['game_slug'] ?>"
+                                    class="text-2xl text-[var(--common-color)] game-name"
+                                    href="<?= $site_url . $game['game_name'] ?>"><?= $game['game_name'] ?></a>
+                                <a data-ajax="true" data-href="/<?= $game['slug'] ?>"
+                                    class="text-md text-[var(--common-color-muted)] mt-1 game-category capitalize"
+                                    href="<?= $site_url . $game['slug'] ?>"><?= $game['game_category'] ?></a>
+                            </div>
+                        </div>
+                    <?php } ?>
+                </div>
+            <?php } ?>
+        </div>
+    </section>
+</div>

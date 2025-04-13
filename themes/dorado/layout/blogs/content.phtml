@@ -1,0 +1,33 @@
+<?php global $site_url, $zon; ?>
+<div style="min-height: 30vh; filter: blur(90px)" class="active-game-img">
+    <div class="overlay"></div>
+    <div style="background-image: url(<?= $site_url . 'static/img/' . $zon['config']['page_banner'] ?>);" id="bg-game-img" class="image"></div>
+</div>
+<h1 class="text-3xl mb-8 mt-12 mb-12 flex items-center gap-4 text-[var(--common-color)] font-semibold page-heading">
+    <svg width="30" height="30" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M8 6C8 4.89543 8.89543 4 10 4H30L40 14V42C40 43.1046 39.1046 44 38 44H10C8.89543 44 8 43.1046 8 42V6Z"
+            fill="none" stroke="rgb(24, 104, 253)" stroke-width="3" stroke-linejoin="round"></path>
+        <path d="M16 20H32" stroke="rgb(24, 104, 253)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="M16 28H32" stroke="rgb(24, 104, 253)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+    Blogs
+</h1>
+<div class="_700x120"><?= getAdById(7, "code") ?></div>
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
+    <?php foreach (getBlogs() as $blog) { ?>
+        <div class="rounded-lg wow <?php echo $zon['config']['animate_class'] ?> p-3 shadow-md">
+            <a href="<?php echo $site_url . 'blog/' . makeSlug($blog['blog_title']) . '/' . $blog['id'] ?>">
+                <img src="<?php echo $site_url . 'static/blog/' . $blog['blog_image'] ?>" style="height: 230px;"
+                    class="object-cover w-full rounded-lg overflow-hidden" />
+            </a>
+            <div class="px-2 py-2">
+                <a href="<?php echo $site_url . 'blog/' . makeSlug($blog['blog_title']) . '/' . $blog['id'] ?>">
+                    <h2 class="text-xl mt-2 text-[var(--common-color)] hover:text-[var(--theme-color)] mb-2 line-clamp-2 font-semibold">
+                        <?= $blog['blog_title'] ?></h2>
+                </a>
+                <span class="text-xs " style="color: var(--common-color-muted);"><?= $blog['blog_date'] ?></span>
+                <p class=" text-sm line-clamp-3 " style="color: var(--common-color-muted);"><?= $blog['blog_desc'] ?></p>
+            </div>
+        </div>
+    <?php } ?>
+</div>

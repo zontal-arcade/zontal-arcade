@@ -1,0 +1,101 @@
+<?php global $zon, $site_url; ?>
+<header style="background-color: var(--zon-body-bg-color);" class="z-container pt-1 pb-2 sticky z-50 top-0  w-full">
+  <div class="flex items-center gap-6 justify-between w-full">
+    <div class="flex gap-5 items-center ">
+      <?php if ($zon['page'][0] !== 'blog') { ?>
+        <div class="burger-menu-sm bm-sm">
+          <svg xmlns="http://www.w3.org/2000/svg" width="19px" height="19px" fill="none" stroke-width="1.1"
+            viewBox="0 0 24 24" color="#d9d9d9">
+            <path style="stroke: var(--zon-common-text-color);" stroke="#d9d9d9" stroke-width="1.1" stroke-linecap="round"
+              stroke-linejoin="round" d="M3 5h18M3 12h18M3 19h18"></path>
+          </svg>
+        </div>
+      <?php } ?>
+      <?php if ($zon['page'][0] == 'blog') { ?>
+        <a class="logo" href="<?php echo $site_url ?>">
+          <img style="display: var(--zon-dark-logo);"
+            src="<?php echo $site_url . 'static/img/logo/' . $zon['config']['site_logo_dark'] ?>" width="140"
+            class="logo" />
+          <img style="display: var(--zon-light-logo);"
+            src="<?php echo $site_url . 'static/img/logo/' . $zon['config']['site_logo_light'] ?>" width="140"
+            class="logo" />
+        </a>
+      <?php } ?>
+      <div class="flex relative z-100 search-bar hover:bg-[var(--zon-search-hover-color)] py-2 px-2 rounded-md w-96"
+        style="background-color: var(--zon-search-bg-color)">
+        <input type="text" class="w-full live-search-input px-2 bg-transparent text-sm outline-none"
+          placeholder="Search" />
+        <button class="px-4">
+          <svg xmlns="http://www.w3.org/2000/svg" width="19px" height="19px" fill="none" stroke-width="1.1"
+            viewBox="0 0 24 24" color="#000000">
+            <path stroke="#000000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+              d="m17 17 4 4M3 11a8 8 0 1 0 16 0 8 8 0 0 0-16 0Z"></path>
+          </svg>
+        </button>
+        <div
+          class="search-result hidden live-search min-h-[fit] transition duration-300 z-40 p-6 absolute top-10 left-0 rounded-xl w-full bg-[var(--zon-body-bg-color)] shadow-xl">
+          <div id="live-games">
+
+          </div>
+          <div class="flex live-search-loader justify-center items-center">
+            <div
+              class="loader border-[6px] animate-spin border-transparent border-l-[var(--zon-theme-color)] rounded-full block h-14 w-14 ">
+            </div>
+          </div>
+        </div>
+        <div class="clicker"></div>
+      </div>
+    </div>
+    <div class="flex items-center gap-4">
+      <div class="wrapper theme-changer">
+        <svg id="LightIcon" xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="none" stroke-width="1.5"
+          viewBox="0 0 24 24" color="#000000">
+          <path stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+            d="M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12ZM22 12h1M12 2V1M12 23v-1M20 20l-1-1M20 4l-1 1M4 20l1-1M4 4l1 1M1 12h1">
+          </path>
+        </svg>
+        <input type="checkbox" class="theme-toggler" />
+        <svg id="DarkIcon" xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="none" stroke-width="1.5"
+          viewBox="0 0 24 24" color="#000000">
+          <path stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+            d="M3 11.507a9.493 9.493 0 0 0 18 4.219c-8.507 0-12.726-4.22-12.726-12.726A9.494 9.494 0 0 0 3 11.507Z">
+          </path>
+        </svg>
+      </div>
+      <!--  -->
+      <?php if (IsLoggedin) { ?>
+        <div class="profile relative">
+          <div class="flex gap-4">
+            <img src="<?php echo $site_url . 'static/img/' . $zon['user']['user_pic'] ?>"
+              style="width: 40px; height: 40px;" class="object-cover rounded-full" />
+            <div class="text">
+              <span class="font-semibold text-[var(--zon-common-text-color)] "><?php echo $zon['user']['username'] ?></span>
+              <p class="text-xs text-[var(--zon-muted-color)]"><?php echo $zon['config']['profile_tagline'] ?></p>
+            </div>
+          </div>
+          <div class="dropdown-menu rounded-md p-2">
+            <ul>
+
+              <?php if (IsAdmin) { ?>
+                <li><a href="<?php echo $site_url ?>admin/" class="block py-2">Admin Panel</a></li>
+                <hr class="mb-2 border-[var(--zon-comment-input-b-color)] mt-2" />
+              <?php } ?>
+              <li><a href="<?php echo $site_url . strtolower($zon['user']['username']) ?>/likes" class="block py-2">Liked Games</a></li>
+              <li><a href="<?php echo $site_url . strtolower($zon['user']['username']) ?>/comments" class="block py-2">Comments</a></li>
+              <li><a href="<?php echo $site_url . strtolower($zon['user']['username']) ?>/settings" class="block py-2">Settings</a></li>
+              <hr class="mb-2 border-[var(--zon-comment-input-b-color)] mt-2" />
+              <li><a href="<?php echo $site_url ?>logout" class="block py-2">Logout</a></li>
+            </ul>
+          </div>
+        </div>
+      <?php } else { ?>
+        <div class="flex gap-3">
+          <a href="<?php echo $site_url ?>login" class="block text-white py-1.5 font-medium px-4 rounded-md"
+            style="background: var(--zon-theme-color)">Login</a>
+
+            <a href="<?php echo $site_url ?>register" class="block register-button text-[var(--zon-common-text-color)] hover:text-white transition duration-300 hover:bg-[var(--zon-theme-color)] text-white py-1.5 font-medium px-4 rounded-md">Sign up</a>
+        </div>
+      <?php } ?>
+    </div>
+  </div>
+</header>

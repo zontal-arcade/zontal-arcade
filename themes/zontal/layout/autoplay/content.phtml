@@ -1,0 +1,245 @@
+<?php
+global $zon, $site_url;
+$gd = AutoPlay();
+$game_url = $site_url . 'game/' . makeSlug($gd['game_name']) . '/' . $gd['id'];
+?>
+<div id="ShareModal" class="share-modal hidden">
+    <div class="modal-dialog">
+        <div class="flex items-center justify-between mb-6">
+            <h2 style="color: var(--zon-common-text-color);" class="text-xl font-semibold ">Share</h2>
+            <span onclick="this.parentNode.parentNode.parentNode.classList.toggle('hidden')"
+                class="text-3xl">&times;</span>
+        </div>
+        <div class="flex gap-2">
+            <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=<?php echo $game_url ?>"
+                class="h-14 w-14 flex items-center justify-center bg-blue-800 rounded-full ">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="#fff" stroke-width="1.5"
+                    viewBox="0 0 24 24" color="#000000">
+                    <path stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                        d="M17 2h-3a5 5 0 0 0-5 5v3H6v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3V2Z"></path>
+                </svg>
+            </a>
+            <a target="_blank" href="https://twitter.com/intent/tweet?text=<?php echo $gd['game_name'] ?> <?php echo $game_url ?>"
+                class="h-14 w-14 flex items-center justify-center bg-blue-400 rounded-full ">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="#fff" stroke-width="1.5"
+                    viewBox="0 0 24 24" color="#000000">
+                    <path stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                        d="M23 3.01s-2.018 1.192-3.14 1.53a4.48 4.48 0 0 0-7.86 3v1a10.66 10.66 0 0 1-9-4.53s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5 0-.278-.028-.556-.08-.83C21.94 5.674 23 3.01 23 3.01Z">
+                    </path>
+                </svg>
+            </a>
+            <a target="_blank"
+                href="https://www.pinterest.com/pin/create/button/?url=<?php echo $game_url ?>&media=<?php echo $gd['game_image_url'] ?>&description=<?php echo $gd['game_description'] ?>"
+                class="h-14 w-14 flex items-center justify-center bg-red-600 rounded-full ">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="none" stroke-width="1.5"
+                    viewBox="0 0 24 24" color="#000000">
+                    <path stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        d="M8 14.5c-3-4.5 1.462-8 4.5-8 3.038 0 5.5 1.654 5.5 5.5 0 3.038-2 5-4 5s-3-2-2.5-5M12 10 9 21.5">
+                    </path>
+                    <path stroke="transparent" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                        d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10Z"></path>
+                </svg>
+            </a>
+            <a target="_blank" href="https://t.me/share/url?url=<?php echo $game_url ?>&text=<?php echo $gd['game_description'] ?>"
+                class="h-14 w-14 flex items-center justify-center bg-blue-500 rounded-full ">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="none" stroke-width="1.5"
+                    viewBox="0 0 24 24" color="#000000">
+                    <path stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                        d="M21 5 2 12.5l7 1M21 5l-2.5 15L9 13.5M21 5 9 13.5m0 0V19l3.249-3.277"></path>
+                </svg>
+            </a>
+        </div>
+        <div class="flex mt-8 border-2 rounded-md overflow-hidden hover:border-blue-500 border-[var(--zon-theme-color)] ">
+            <input id="textToCopy" type="text" value="<?php echo $game_url ?>" placeholder="Game URL"
+                class="w-full bg-transparent text-sm outline-none py-3 px-2 " />
+            <button onclick="copyToURL()" class="px-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="none" stroke-width="1.5"
+                    viewBox="0 0 24 24" color="#000000">
+                    <path style="stroke: var(--zon-muted-color);" stroke="#000000" stroke-width="1.5"
+                        stroke-linecap="round" stroke-linejoin="round"
+                        d="M19.4 20H9.6a.6.6 0 0 1-.6-.6V9.6a.6.6 0 0 1 .6-.6h9.8a.6.6 0 0 1 .6.6v9.8a.6.6 0 0 1-.6.6Z">
+                    </path>
+                    <path style="stroke: var(--zon-muted-color);" stroke="#000000" stroke-width="1.5"
+                        stroke-linecap="round" stroke-linejoin="round"
+                        d="M15 9V4.6a.6.6 0 0 0-.6-.6H4.6a.6.6 0 0 0-.6.6v9.8a.6.6 0 0 0 .6.6H9"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+</div>
+<div class="flex game-play-container gap-5 ">
+    <div class="main-gameplay">
+        <div class="game-frame">
+            <iframe id="zonFrame" class="absolute w-full h-full top-0 left-0 " src="<?= $gd['game_url'] ?>"
+                scrolling="no" frameborder="0"></iframe>
+        </div>
+        <div class="flex px-2 py-2 game-meta-container justify-between gap-6">
+            <div class="game-meta ">
+                <h1 class="text-2xl font-bold">
+                    <?= $gd['game_name'] ?>
+                </h1>
+                <div class="flex gap-4 mt-2 mb-2">
+                    <a href="<?php echo $site_url . 'category/?n=' . urlencode($gd['game_category']); ?>" style="color: var(--zon-muted-color);" href="#" class="text-sm capitalize ">
+                        <?= $gd['game_category'] ?>
+                    </a>
+                    <span style="color: var(--zon-muted-color);" class="text-sm">
+                        <?= $gd['game_played'] ?> Played
+                    </span>
+                </div>
+                <p style="color: var(--zon-muted-color);" class="text-sm mt-3">
+                    <?= $gd['game_description'] ?>
+                </p>
+            </div>
+            <div class="flex gap-2">
+                <button
+                    class="game-action-buttons whitespace-nowrap h-10 w-fit text-sm rounded-full px-4 gap-2 flex justify-center items-center ">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill="none" stroke-width="1.5"
+                        viewBox="0 0 24 24" color="#000000">
+                        <path style="stroke: var(--zon-muted-color);" stroke="#000000" stroke-width="1.5"
+                            stroke-linejoin="round"
+                            d="M22 8.862a5.95 5.95 0 0 1-1.654 4.13c-2.441 2.531-4.809 5.17-7.34 7.608-.581.55-1.502.53-2.057-.045l-7.295-7.562c-2.205-2.286-2.205-5.976 0-8.261a5.58 5.58 0 0 1 8.08 0l.266.274.265-.274A5.612 5.612 0 0 1 16.305 3c1.52 0 2.973.624 4.04 1.732A5.95 5.95 0 0 1 22 8.862Z">
+                        </path>
+                    </svg>
+                    <span>1</span> Like
+                </button>
+                <button onclick="document.getElementById('ShareModal').classList.toggle('hidden')"
+                    class="game-action-buttons h-10 w-fit text-sm rounded-full px-4 gap-4 flex justify-center items-center ">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill="none" stroke-width="1.5"
+                        viewBox="0 0 24 24" color="#000000">
+                        <path style="stroke: var(--zon-muted-color);" stroke="#000000" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round"
+                            d="M18 22a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM18 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM6 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z">
+                        </path>
+                        <path style="stroke: var(--zon-muted-color);" stroke="#000000" stroke-width="1.5"
+                            d="m15.5 6.5-7 4M8.5 13.5l7 4"></path>
+                    </svg>
+                    Share
+                </button>
+                <button title="full screen" id="fullscreenButton"
+                    class="game-action-buttons h-10 w-10 rounded-full flex justify-center items-center "><svg
+                        xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill="none" stroke-width="1.5"
+                        viewBox="0 0 24 24" color="#000000">
+                        <path style="stroke: var(--zon-muted-color);" stroke="#000000" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="1.5"
+                            d="M4.998 2H2v2.998h2.998V2ZM4.998 3.501h14M3.499 4.998V19M20.497 5v14.002M4.998 20.501h14M4.998 19H2v2.998h2.998V19ZM21.996 2.002h-2.998V5h2.998V2.002ZM21.996 19.002h-2.998V22h2.998v-2.998Z">
+                        </path>
+                    </svg></button>
+            </div>
+        </div>
+
+        <?php if (getAd('1', 'status') !== 0) { ?>
+            <div class="p-2">
+                <div class="ads flex justify-center">
+                    <?php echo getAd('1', 'code') ?>
+                </div>
+            </div>
+        <?php } ?>
+
+        <div class="smilar-games mt-8 ">
+            <h2 class="page-heading font-bold text-2xl mb-8">Similar Games</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-4">
+                <?php foreach (GameByCategoryWise($gd['game_category'], 20) as $game) {
+                    ?>
+                    <div class="rounded-lg">
+                        <div class="rounded-lg">
+                            <div class="game-card w-full">
+                                <img src="<?= $game['game_banner_url'] ?>" />
+                                <div class="game-details gap-4">
+                                    <a href="<?php echo $site_url . 'game/' . makeSlug($game['game_name']) . '/' . $game['id'] ?>" class="text-md line-clamp-2 font-semibold">
+                                        <?= $game['game_name'] ?>
+                                    </a>
+                                    <div
+                                        class="game-meta rounded-lg mt-3 w-fit bg-[var(--zon-gmeta-bg-color)] px-2 py-0.5 flex items-center gap-2">
+                                        <span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="19px" height="19px" fill="none"
+                                                stroke-width="1.1" viewBox="0 0 24 24" color="#000000">
+                                                <path stroke="#000000" stroke-width="1.1" stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    d="M17.5 17.5c2.5 3.5 6.449.915 5.5-2.5-1.425-5.129-2.2-7.984-2.603-9.492A2.032 2.032 0 0 0 18.438 4H5.562c-.918 0-1.718.625-1.941 1.515C2.78 8.863 2.033 11.802 1.144 15c-.948 3.415 3 6 5.5 2.5">
+                                                </path>
+                                                <path stroke="#000000" stroke-width="1.1" stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    d="M16 4v2a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V4M8 16a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM16 16a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z">
+                                                </path>
+                                            </svg>
+                                        </span>
+                                        <span class="text-xs">
+                                            <?= $game['game_played'] ?> Plays
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php } ?>
+            </div>
+        </div>
+
+        <?php if (getAd('2,3', 'status') !== 0) { ?>
+            <div class="p-2">
+                <div class="ads flex justify-center">
+                    <?php echo getAd('2,3', 'code') ?>
+                </div>
+            </div>
+        <?php } ?>
+    </div>
+    <div class="sidebar p-2">
+        <div class="flex gap-4 mb-4">
+            <?php if (getAd('1,2', 'status') !== 0) { ?>
+                <div class="p-0">
+                    <div class="ads flex justify-center">
+                        <?php echo getAd('1,2', 'code') ?>
+                    </div>
+                </div>
+            <?php } ?>
+            <?php if (getAd('1,1', 'status') !== 0) { ?>
+                <div class="p-0">
+                    <div class="ads flex justify-center">
+                        <?php echo getAd('1,1', 'code') ?>
+                    </div>
+                </div>
+            <?php } ?>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-4">
+            <?php foreach (getGame(20) as $game) { ?>
+                <div class="rounded-lg">
+                    <div class="game-card w-full">
+                        <img src="<?= $game['game_banner_url'] ?>" />
+                        <div class="game-details gap-4">
+                            <a href="<?php echo $site_url . 'game/' . makeSlug($game['game_name']) . '/' . $game['id'] ?>" class="text-md line-clamp-2 font-semibold">
+                                <?= $game['game_name'] ?>
+                            </a>
+                            <div
+                                class="game-meta rounded-lg mt-3 w-fit bg-[var(--zon-gmeta-bg-color)] px-2 py-0.5 flex items-center gap-2">
+                                <span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="19px" height="19px" fill="none"
+                                        stroke-width="1.1" viewBox="0 0 24 24" color="#000000">
+                                        <path stroke="#000000" stroke-width="1.1" stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M17.5 17.5c2.5 3.5 6.449.915 5.5-2.5-1.425-5.129-2.2-7.984-2.603-9.492A2.032 2.032 0 0 0 18.438 4H5.562c-.918 0-1.718.625-1.941 1.515C2.78 8.863 2.033 11.802 1.144 15c-.948 3.415 3 6 5.5 2.5">
+                                        </path>
+                                        <path stroke="#000000" stroke-width="1.1" stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M16 4v2a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V4M8 16a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM16 16a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z">
+                                        </path>
+                                    </svg>
+                                </span>
+                                <span class="text-xs">
+                                    <?= $game['game_played'] ?> Plays
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php } ?>
+        </div>
+    </div>
+</div>
+
+<script>
+    var game_frame = document.getElementById("zonFrame");
+    var game_frame_src = game_frame.src;
+    if (game_frame_src.includes("gamedistribution")) {
+        game_frame.src += "?gd_sdk_referrer_url=https://gamedistribution.com/games/cooking-festival";
+    }
+</script>
